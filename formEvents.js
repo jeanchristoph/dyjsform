@@ -1,3 +1,6 @@
+let resizeTimeOut = 0;
+const animationSpeed = 1000;
+
 // Fonction pour masquer/afficher un élément en fonction de l'input
 function inputHide(input, idToHide) {
     const inputType = input.getAttribute('type');
