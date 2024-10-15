@@ -1,88 +1,100 @@
+// Fonction pour masquer/afficher un élément en fonction de l'input
+function inputHide(input, idToHide) {
+    const inputType = input.getAttribute('type');
+    const inputValue = input.value;
 
-function inputHide(input,idToHide) {
-    const inputType = input.prop('type');
-    const inputValue = input.val()
-    if(((inputType == 'checkbox' || inputType == 'radio') && input.is(':checked')) ||
-        (inputType == 'number' && inputValue > 0) ||
-        (inputType == 'text' && inputValue != '')){
-        idToHide.show(animationSpeed, () => resizeAccordeonContents());
+    if (((inputType === 'checkbox' || inputType === 'radio') && input.checked) ||
+        (inputType === 'number' && inputValue > 0) ||
+        (inputType === 'text' && inputValue !== '')) {
+        idToHide.style.display = 'block';
+        resizeAccordeonContents();
     } else {
-        idToHide.hide(animationSpeed, () => resizeAccordeonContents());
+        idToHide.style.display = 'none';
+        resizeAccordeonContents();
     }
 }
 
-function CheckboxEmptyValueCheck(checkbox,input,event,errorMessage){
-    const inputValue = input.val()
-    const inputType = input.prop('type');
+// Fonction pour vérifier si la checkbox est cochée avec valeur vide
+function CheckboxEmptyValueCheck(checkbox, input, event, errorMessage) {
+    const inputValue = input.value;
+    const inputType = input.getAttribute('type');
     let isEmpty = false;
-    // validation
-    if ((inputType == 'number' && inputValue > 0) || (inputType == 'text' && inputValue != '')){
-        checkbox.addClass('error').attr("data-original-title", errorMessage).tooltip('fixTitle').tooltip('show')
+
+    if ((inputType === 'number' && inputValue > 0) || (inputType === 'text' && inputValue !== '')) {
+        checkbox.classList.add('error');
+        checkbox.setAttribute("data-original-title", errorMessage);
+        // Assumes a tooltip handler exists
         event.preventDefault();
     } else {
-        checkbox.removeClass('error').attr("data-original-title", '').tooltip('fixTitle').tooltip('hide');
+        checkbox.classList.remove('error');
+        checkbox.setAttribute("data-original-title", '');
         isEmpty = true;
     }
     return isEmpty;
-    // --
 }
 
-// scroll auto sur le dernier accordéon ouvert
-function scrollToLast(jQueryTag, timer = 1000){
-    setTimeout( function (){
-        var lastElement = $(jQueryTag).last();
-        if (lastElement.length){
-            $('html,body').animate({scrollTop: lastElement.offset().top - 90},'slow');
+// Fonction pour faire défiler jusqu'au dernier élément
+function scrollToLast(selector, timer = 1000) {
+    setTimeout(() => {
+        const lastElement = document.querySelector(selector + ":last-child");
+        if (lastElement) {
+            window.scrollTo({
+                top: lastElement.offsetTop - 90,
+                behavior: 'smooth'
+            });
         }
-    }, timer)
+    }, timer);
 }
 
+// Fonction pour rendre une checkbox en lecture seule
 function checkboxReadonly(checkbox, input, checked = true) {
-    const inputType = input.prop('type');
-    const inputElementName = input.prop('nodeName');
+    const inputType = input.getAttribute('type');
+    const inputElementName = input.nodeName;
     let readonly = 'readonly';
-    if ((inputType == 'checkbox') || inputElementName == 'SELECT'){
-        readonly = 'disabled'
+
+    if (inputType === 'checkbox' || inputElementName === 'SELECT') {
+        readonly = 'disabled';
     }
-    if (checked && checkbox.is(":checked") || !checked && !checkbox.is(":checked")){
-        input.attr(readonly, true);
+    if ((checked && checkbox.checked) || (!checked && !checkbox.checked)) {
+        input.setAttribute(readonly, true);
     } else {
-        input.attr(readonly, false);
+        input.removeAttribute(readonly);
     }
 }
 
-// <--
+// Fonction pour créer et afficher un modal
 function createModal(selector) {
-    let modal = new bootstrap.Modal($(selector), {
+    let modal = new bootstrap.Modal(document.querySelector(selector), {
         keyboard: false
-    })
+    });
     modal.toggle();
 }
 
+// Fonction pour basculer l'affichage d'un modal
 function toggleModal(selector) {
-    let modal = bootstrap.Modal.getInstance($(selector));
+    let modal = bootstrap.Modal.getInstance(document.querySelector(selector));
     modal.toggle();
 }
 
-
+// Fonction pour redimensionner un accordéon
 function resizeAccordeonContents() {
     if (resizeTimeOut) {
-        clearTimeout(resizeTimeOut)
+        clearTimeout(resizeTimeOut);
     }
-    resizeTimeOut = setTimeout(function(){
-        // console.log('resizeAccordeonContents');
-        let panel = $(".accordion.active").nextAll(".panel");
-        // panel = $(".accordion.active").nextAll(".panel").toggle();
-        panel.each(function (index) {
-            if ($(this).length) {
-                $(this).css("maxHeight", $(this).prop('scrollHeight') + "px");
+    resizeTimeOut = setTimeout(() => {
+        let panels = document.querySelectorAll(".accordion.active ~ .panel");
+        panels.forEach(panel => {
+            if (panel) {
+                panel.style.maxHeight = panel.scrollHeight + "px";
             }
-        })
+        });
     }, 500);
 }
+
+// Fonction pour ajuster automatiquement la hauteur d'un champ de texte
 function autoGrow(oField) {
     if (oField.scrollHeight > oField.clientHeight) {
-        oField.style.height = `${oField.scrollHeight}px`;
+        oField.style.height = oField.scrollHeight + "px";
     }
     resizeAccordeonContents();
 }
