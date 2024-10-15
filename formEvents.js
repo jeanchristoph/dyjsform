@@ -1,0 +1,65 @@
+
+function inputHide(input,idToHide) {
+    const inputType = input.prop('type');
+    const inputValue = input.val()
+    if(((inputType == 'checkbox' || inputType == 'radio') && input.is(':checked')) ||
+        (inputType == 'number' && inputValue > 0) ||
+        (inputType == 'text' && inputValue != '')){
+        idToHide.show(animationSpeed, () => resizeAccordeonContents());
+    } else {
+        idToHide.hide(animationSpeed, () => resizeAccordeonContents());
+    }
+}
+
+function CheckboxEmptyValueCheck(checkbox,input,event,errorMessage){
+    const inputValue = input.val()
+    const inputType = input.prop('type');
+    let isEmpty = false;
+    // validation
+    if ((inputType == 'number' && inputValue > 0) || (inputType == 'text' && inputValue != '')){
+        checkbox.addClass('error').attr("data-original-title", errorMessage).tooltip('fixTitle').tooltip('show')
+        event.preventDefault();
+    } else {
+        checkbox.removeClass('error').attr("data-original-title", '').tooltip('fixTitle').tooltip('hide');
+        isEmpty = true;
+    }
+    return isEmpty;
+    // --
+}
+
+// scroll auto sur le dernier accordéon ouvert
+function scrollToLast(jQueryTag, timer = 1000){
+    setTimeout( function (){
+        var lastElement = $(jQueryTag).last();
+        if (lastElement.length){
+            $('html,body').animate({scrollTop: lastElement.offset().top - 90},'slow');
+        }
+    }, timer)
+}
+
+function checkboxReadonly(checkbox, input, checked = true) {
+    const inputType = input.prop('type');
+    const inputElementName = input.prop('nodeName');
+    let readonly = 'readonly';
+    if ((inputType == 'checkbox') || inputElementName == 'SELECT'){
+        readonly = 'disabled'
+    }
+    if (checked && checkbox.is(":checked") || !checked && !checkbox.is(":checked")){
+        input.attr(readonly, true);
+    } else {
+        input.attr(readonly, false);
+    }
+}
+
+// <--
+function createModal(selector) {
+    let modal = new bootstrap.Modal($(selector), {
+        keyboard: false
+    })
+    modal.toggle();
+}
+
+function toggleModal(selector) {
+    let modal = bootstrap.Modal.getInstance($(selector));
+    modal.toggle();
+}
