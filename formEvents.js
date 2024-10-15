@@ -63,3 +63,26 @@ function toggleModal(selector) {
     let modal = bootstrap.Modal.getInstance($(selector));
     modal.toggle();
 }
+
+
+function resizeAccordeonContents() {
+    if (resizeTimeOut) {
+        clearTimeout(resizeTimeOut)
+    }
+    resizeTimeOut = setTimeout(function(){
+        // console.log('resizeAccordeonContents');
+        let panel = $(".accordion.active").nextAll(".panel");
+        // panel = $(".accordion.active").nextAll(".panel").toggle();
+        panel.each(function (index) {
+            if ($(this).length) {
+                $(this).css("maxHeight", $(this).prop('scrollHeight') + "px");
+            }
+        })
+    }, 500);
+}
+function autoGrow(oField) {
+    if (oField.scrollHeight > oField.clientHeight) {
+        oField.style.height = `${oField.scrollHeight}px`;
+    }
+    resizeAccordeonContents();
+}
