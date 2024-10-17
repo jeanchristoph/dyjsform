@@ -6,13 +6,13 @@ class Dyjsform {
      * Exemple:  [{'html_element':'input','type': 'text', 'name': 'name'}]
      * @param json
      */
-    constructor(entity = [{'html_element':'input','type': 'text', 'name': 'name_1', 'value':''},
+    constructor(entity = [{'html_element':'input','type': 'number', 'name': 'name_1', 'value':''},
         {'html_element':'input','type': 'text', 'name': 'name_2', 'value':''},
-        {'html_element':'input','type': 'text', 'name': 'name_3', 'value':''}
+        {'html_element':'input','type': 'password', 'name': 'name_3', 'value':''}
     ], json = {}) {
         this.entity = entity;
         this.json = json;
-        this.onFieldkeyup();
+        this.loadEventListeners();
     }
 
     getEntity(){
@@ -21,7 +21,7 @@ class Dyjsform {
 
     setEntity(array){
         this.entity = array;
-        this.onFieldkeyup();
+        this.loadEventListeners();
         return this;
     }
 
@@ -45,14 +45,16 @@ class Dyjsform {
         return element;
     }
 
-    onFieldkeyup () {
-        console.log('onFieldkeyup');
-        console.log(this.entity);
+    loadEventListeners () {
         for (const entity of this.entity){
-            console.log(document.querySelector('.' + entity.name));
-            if (document.querySelector('.' + entity.name)){
-                document.querySelector('.' + entity.name).addEventListener('keyup', function() {
-                    this.generateJson();  // Générer le JSON sur keyup
+            const elements = document.querySelectorAll('.' + entity.name);
+            console.log(elements); // Vérifier les éléments trouvés
+            if (elements.length > 0) {
+                elements.forEach((element) => {
+                    element.addEventListener('keyup', () => {
+                        this.generateJson();  // Générer le JSON sur keyup
+                        console.log("this.generateJson()");
+                    });
                 });
             }
         }
@@ -63,7 +65,7 @@ class Dyjsform {
     generateJson() {
         console.log('generateJson');
         var data = [];
-        document.querySelectorAll('#dysform .dysform_entity').forEach(function(dysformEntity) {
+        document.querySelectorAll('#dysform .dysform_entity').forEach((dysformEntity) =>  {
             let entityData = {};
             for (let entity of this.entity) {
                 entityData[entity.name] = dysformEntity.querySelector('.' + entity.name).value;
@@ -95,6 +97,7 @@ class Dyjsform {
         HtmlForm = HtmlForm + deleteButton;
         HtmlForm = HtmlForm + end;
         document.querySelector('#dysform').insertAdjacentHTML('beforeend', HtmlForm);
+        this.loadEventListeners();
     }
 
 // Charger le JSON à l'affichage de la page et générer les entitys
