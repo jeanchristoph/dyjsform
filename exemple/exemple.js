@@ -2,7 +2,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     let dyjsform = new Dyjsform();
 
-
 // Ajouter une nouvelle ligne
     document.getElementById('add_entity').addEventListener('click', function(event) {
         event.preventDefault();
@@ -30,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Initialiser le JSON à l'ouverture de la page
     dyjsform.loadJson()// Charger les données JSON au démarrage de la page
     dyjsform.generateJson(); // Générer le JSON initial
+    dyjsform.loadEventListeners(); // Générer le JSON initial
 
 // MODULE ADHESION FIN
 });
