@@ -2,7 +2,7 @@ let resizeTimeOut = 0;
 const animationSpeed = 1000;
 
 // Fonction pour masquer/afficher un élément en fonction de l'input
-function inputHide(input, idToHide) {
+export function inputHide(input, idToHide) {
     const inputType = input.getAttribute('type');
     const inputValue = input.value;
 
@@ -18,7 +18,7 @@ function inputHide(input, idToHide) {
 }
 
 // Fonction pour vérifier si la checkbox est cochée avec valeur vide
-function CheckboxEmptyValueCheck(checkbox, input, event, errorMessage) {
+export function CheckboxEmptyValueCheck(checkbox, input, event, errorMessage) {
     const inputValue = input.value;
     const inputType = input.getAttribute('type');
     let isEmpty = false;
@@ -26,7 +26,6 @@ function CheckboxEmptyValueCheck(checkbox, input, event, errorMessage) {
     if ((inputType === 'number' && inputValue > 0) || (inputType === 'text' && inputValue !== '')) {
         checkbox.classList.add('error');
         checkbox.setAttribute("data-original-title", errorMessage);
-        // Assumes a tooltip handler exists
         event.preventDefault();
     } else {
         checkbox.classList.remove('error');
@@ -37,7 +36,7 @@ function CheckboxEmptyValueCheck(checkbox, input, event, errorMessage) {
 }
 
 // Fonction pour faire défiler jusqu'au dernier élément
-function scrollToLast(selector, timer = 1000) {
+export function scrollToLast(selector, timer = 1000) {
     setTimeout(() => {
         const lastElement = document.querySelector(selector + ":last-child");
         if (lastElement) {
@@ -50,7 +49,7 @@ function scrollToLast(selector, timer = 1000) {
 }
 
 // Fonction pour rendre une checkbox en lecture seule
-function checkboxReadonly(checkbox, input, checked = true) {
+export function checkboxReadonly(checkbox, input, checked = true) {
     const inputType = input.getAttribute('type');
     const inputElementName = input.nodeName;
     let readonly = 'readonly';
@@ -66,7 +65,7 @@ function checkboxReadonly(checkbox, input, checked = true) {
 }
 
 // Fonction pour créer et afficher un modal
-function createModal(selector) {
+export function createModal(selector) {
     let modal = new bootstrap.Modal(document.querySelector(selector), {
         keyboard: false
     });
@@ -74,13 +73,13 @@ function createModal(selector) {
 }
 
 // Fonction pour basculer l'affichage d'un modal
-function toggleModal(selector) {
+export function toggleModal(selector) {
     let modal = bootstrap.Modal.getInstance(document.querySelector(selector));
     modal.toggle();
 }
 
 // Fonction pour redimensionner un accordéon
-function resizeAccordeonContents() {
+export function resizeAccordeonContents() {
     if (resizeTimeOut) {
         clearTimeout(resizeTimeOut);
     }
@@ -95,7 +94,7 @@ function resizeAccordeonContents() {
 }
 
 // Fonction pour ajuster automatiquement la hauteur d'un champ de texte
-function autoGrow(oField) {
+export function autoGrow(oField) {
     if (oField.scrollHeight > oField.clientHeight) {
         oField.style.height = oField.scrollHeight + "px";
     }

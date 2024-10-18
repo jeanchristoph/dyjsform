@@ -1,22 +1,32 @@
-class Dyjsform {
+import {templateIndex} from './template/index.js';
+
+
+export default class Dyjsform {
 
     /**
      *
-     * @param entity
      * Exemple:  [{'html_element':'input','type': 'number', 'name': 'name_1','label': 'name_1', 'value':''},]
-     * @param json
+     * @param templateName
      */
-    constructor(entity = [{'html_element':'input','type': 'number', 'name': 'name_1','label': 'name_1', 'value':''},
-        {'html_element':'input','type': 'text', 'label': 'name_1', 'name': 'name_2', 'value':''},
-        {'html_element':'input','type': 'password', 'label': 'name_1', 'name': 'name_3', 'value':''},
-    ], json = {}) {
-        this.entity = entity;
-        this.json = json;
-        this.initEventListeners();
-        this.handleInputKeyup();
-        // Initialiser le JSON à l'ouverture de la page
-        this.loadJson()// Charger les données JSON au démarrage de la page
-        this.generateJson(); // Générer le JSON initial
+    constructor(templateName = 'default') {
+        this.entity = [{'html_element': 'input', 'type': 'number', 'name': 'name_1', 'label': 'name_1', 'value': ''},
+            {'html_element': 'input', 'type': 'text', 'label': 'name_1', 'name': 'name_2', 'value': ''},
+            {'html_element': 'input', 'type': 'password', 'label': 'name_1', 'name': 'name_3', 'value': ''},
+        ];
+        this.json = {};
+        this.templateName = templateName;
+        this.templateImport = templateIndex[templateName];
+        console.log(this.templateName );
+        console.log(this.templateImport );
+        console.log(templateIndex);
+        this.initForm().then(() =>
+        {
+            this.initEventListeners();
+            this.handleInputKeyup();
+            // Initialiser le JSON à l'ouverture de la page
+            // this.loadJson();// Charger les données JSON au démarrage de la page
+            // this.generateJson(); // Générer le JSON initial
+        });
     }
 
     getEntity(){
@@ -38,18 +48,16 @@ class Dyjsform {
         return this;
     }
 
-    getFieldTemplate(field, BSColumnWidth ) {
-        const element =
-            `<div class="form-group col-md-${BSColumnWidth}">
-            <div class="col-md-12">${field.label}</div>
-            <div class="col-md-12">
-                <${field.html_element} class="form-control ${field.name}" type="${field.type}" value="${field.value}">
-            </div>
-        </div>`;
-        return element;
+    async initForm () {
+        const { default: TemplateClass } = await import(this.templateImport); // Assurez-vous d'importer la classe par défaut
+        const template = new TemplateClass(); // Instancier la classe
+
+        console.log(this.templateImport);
+        console.log(template);
+        document.querySelector('#dyjsform').innerHTML = template.getForm();// Utiliser la méthode getForm()
     }
 
-    initEventListeners () {
+    async initEventListeners () {
         // Ajouter une nouvelle ligne
         document.getElementById('add_entity').addEventListener('click', (event) => {
             event.preventDefault();
@@ -61,7 +69,7 @@ class Dyjsform {
             if (event.target && event.target.classList.contains('remove_entity')) {
                 event.preventDefault();
                 console.log('remove');
-                event.target.closest('.dysform_entity').remove();
+                event.target.closest('.dyjsform_entity').remove();
                 this.generateJson();  // Régénérer le JSON après la suppression
             }
         });
@@ -74,6 +82,8 @@ class Dyjsform {
         });
 
     }
+
+
     handleInputKeyup () {
         // ecoute des inputs
         for (const entity of this.entity){
@@ -90,58 +100,60 @@ class Dyjsform {
         }
     }
 
-    handleEvent
-// Fonction pour générer le JSON
+    // Fonction pour générer le JSON
     generateJson() {
         console.log('generateJson');
-        var data = [];
-        document.querySelectorAll('#dysform .dysform_entity').forEach((dysformEntity) =>  {
+        let data = [];
+        document.querySelectorAll('#dyjsform_container .dyjsform_entity').forEach((dyjsformEntity) =>  {
             let entityData = {};
             for (let entity of this.entity) {
-                entityData[entity.name] = dysformEntity.querySelector('.' + entity.name).value;
+                entityData[entity.name] = dyjsformEntity.querySelector('.' + entity.name).value;
             }
             data.push(entityData);
         });
 
-        document.querySelector('#dysform_options').value = JSON.stringify(data, null);
+        document.querySelector('#dyjsform_options').value = JSON.stringify(data, null);
     }
 
     // Fonction pour créer une entity dans le formulaire Bootstrap 5
-    createEntity () {
-        let begin =`<div class="row form-group align-items-center dysform_entity">`;
+    async createEntity() {
+        const { default: TemplateClass } = await import(this.templateImport);
+        const template = new TemplateClass(); // Instancier la classe
+
+        let begin = `<div class="row form-group align-items-center dyjsform_entity">`;
         let end = `</div>`;
 
         const actionButtons = 1;
-        const fieldNumber = this.getEntity().length  + actionButtons;
+        const fieldNumber = this.getEntity().length + actionButtons;
         const BSColumnWidth = (12 / fieldNumber).toFixed(0);
 
-        const deleteButton = `<div class="form-group col-md-${BSColumnWidth}">
-        <div class="col-md-12">&nbsp;</div>
-        <div class="col-md-12">
-            <button type="button" class="remove_entity btn btn-danger form-control">Supprimer</button>
-        </div>
-    </div>`;
+        //     const deleteButton = `<div class="form-group col-md-${BSColumnWidth}">
+        //     <div class="col-md-12">&nbsp;</div>
+        //     <div class="col-md-12">
+        //         <button type="button" class="remove_entity btn btn-danger form-control">Supprimer</button>
+        //     </div>
+        // </div>`;
+        const deleteButton = template.getDeleteButton(BSColumnWidth);
 
-        let HtmlForm = '';
-
-        HtmlForm = begin;
+        let HtmlForm = begin;
         for (let entity of this.entity) {
             console.log(this.entity);
             console.log(entity);
-            HtmlForm = HtmlForm + this.getFieldTemplate(entity, BSColumnWidth);
+            HtmlForm += template.getField(entity, BSColumnWidth);
         }
-        HtmlForm = HtmlForm + deleteButton;
-        HtmlForm = HtmlForm + end;
-        document.querySelector('#dysform').insertAdjacentHTML('beforeend', HtmlForm);
+        HtmlForm += deleteButton;
+        HtmlForm += end;
+
+        document.querySelector('#dyjsform_container').innerHTML += HtmlForm; // Utiliser += pour ajouter le contenu
         this.handleInputKeyup();
     }
 
 // Charger le JSON à l'affichage de la page et générer les entitys
     loadJson() {
-        var jsonString = document.querySelector('#dysform_options').value;
+        const jsonString = document.querySelector('#dyjsform_options').value;
         if (jsonString) {
             try {
-                var jsonData = JSON.parse(jsonString);
+                const jsonData = JSON.parse(jsonString);
                 jsonData.forEach((item) =>  {
                     this.createEntity(item.type_adhesion, item.code_adhesion, item.value);
                 });
