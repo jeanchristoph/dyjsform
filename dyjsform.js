@@ -93,7 +93,11 @@ export default class Dyjsform {
                 elements.forEach((element) => {
                     element.addEventListener('keyup', () => {
                         this.generateJson();  // Générer le JSON sur keyup
-                        console.log("this.generateJson()");
+                        console.log("keyup");
+                    });
+                    element.addEventListener('change', () => {
+                        this.generateJson();  // Générer le JSON sur keyup
+                        console.log("change");
                     });
                 });
             }
@@ -126,13 +130,6 @@ export default class Dyjsform {
         const actionButtons = 1;
         const fieldNumber = this.getEntity().length + actionButtons;
         const BSColumnWidth = (12 / fieldNumber).toFixed(0);
-
-        //     const deleteButton = `<div class="form-group col-md-${BSColumnWidth}">
-        //     <div class="col-md-12">&nbsp;</div>
-        //     <div class="col-md-12">
-        //         <button type="button" class="remove_entity btn btn-danger form-control">Supprimer</button>
-        //     </div>
-        // </div>`;
         const deleteButton = template.getDeleteButton(BSColumnWidth);
 
         let HtmlForm = begin;
