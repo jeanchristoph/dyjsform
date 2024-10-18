@@ -1,4 +1,4 @@
-import {templateIndex} from './template/index.js';
+import {templateIndex} from './template/index.js'; // ce shortened veut dire que j'ai pas besoin d'index ?
 
 
 export default class Dyjsform {
