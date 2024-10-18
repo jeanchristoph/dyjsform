@@ -4,8 +4,8 @@ export default class template {
 
     getForm() {
         return `
-            <div class="dyjsform_container"></div>
-            <div class="dyjsform_footer row form-group align-items-center">
+            <div id="dyjsform_container"></div>
+            <div  id="dyjsform_footer" class=" row form-group align-items-center">
                 <div class="col-md-3"></div>
                 <div class="col-md-6">
                     <button type="button" id="add_entity" class="form-control btn btn-primary">
