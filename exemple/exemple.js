@@ -1,3 +1,5 @@
+import Dyjsform from '../dyjsform.js';
+
 // MODULE ADHESION
 document.addEventListener('DOMContentLoaded', function() {
     let dyjsform = new Dyjsform();
