@@ -13,8 +13,8 @@
       <root url="file://$PROJECT_DIR$/dyjsform.min.js" />
       <root url="file://$PROJECT_DIR$/exemple/exemple.min.js" />
       <root url="file://$PROJECT_DIR$/formEvents.min.js" />
-      <root url="file://$PROJECT_DIR$/template/default.min.js" />
       <root url="file://$PROJECT_DIR$/template/index.min.js" />
+      <root url="file://$PROJECT_DIR$/template/classic.min.js" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

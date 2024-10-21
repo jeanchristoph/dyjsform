@@ -1,5 +1,3 @@
-import {templateIndex} from './template/index.js'; // ce shortened veut dire que j'ai pas besoin d'index ?
-
 
 export default class Dyjsform {
 
@@ -8,17 +6,15 @@ export default class Dyjsform {
      * Exemple:  [{'html_element':'input','type': 'number', 'name': 'name_1','label': 'name_1', 'value':''},]
      * @param templateName
      */
-    constructor(templateName = 'default') {
+    constructor(templateName = 'classic') {
         this.entity = [{'html_element': 'input', 'type': 'number', 'name': 'name_1', 'label': 'name_1', 'value': ''},
             {'html_element': 'input', 'type': 'text', 'label': 'name_1', 'name': 'name_2', 'value': ''},
             {'html_element': 'input', 'type': 'password', 'label': 'name_1', 'name': 'name_3', 'value': ''},
         ];
         this.json = {};
         this.templateName = templateName;
-        this.templateImport = templateIndex[templateName];
+        this.template = this.getTemplate();
         console.log(this.templateName );
-        console.log(this.templateImport );
-        console.log(templateIndex);
         this.initForm().then(() =>
         {
             this.initEventListeners();
@@ -27,6 +23,7 @@ export default class Dyjsform {
             // this.loadJson();// Charger les données JSON au démarrage de la page
             // this.generateJson(); // Générer le JSON initial
         });
+
     }
 
     getEntity(){
@@ -48,12 +45,14 @@ export default class Dyjsform {
         return this;
     }
 
-    async initForm () {
-        const { default: TemplateClass } = await import(this.templateImport); // Assurez-vous d'importer la classe par défaut
-        const template = new TemplateClass(); // Instancier la classe
+    async getTemplate(){
+        const templateIndex = await import('./template'); // Assurez-vous d'importer la classe par défaut
+         // Assurez-vous d'importer la classe par défaut
+        return new templateIndex[this.templateName]();
+    }
 
-        console.log(this.templateImport);
-        console.log(template);
+    async initForm () {
+        const template = await this.template;
         document.querySelector('#dyjsform').innerHTML = template.getForm();// Utiliser la méthode getForm()
     }
 
@@ -121,9 +120,7 @@ export default class Dyjsform {
 
     // Fonction pour créer une entity dans le formulaire Bootstrap 5
     async createEntity() {
-        const { default: TemplateClass } = await import(this.templateImport);
-        const template = new TemplateClass(); // Instancier la classe
-
+        const template = await this.template;
         let begin = `<div class="row form-group align-items-center dyjsform_entity">`;
         let end = `</div>`;
 

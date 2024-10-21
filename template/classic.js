@@ -1,6 +1,4 @@
-
-
-export default class template {
+export class classic {
 
     getForm() {
         return `
