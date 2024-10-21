@@ -10,10 +10,11 @@ export class Classic {
                         <i class="fas fa-plus"></i> Ajouter
                     </button>
                 </div>
+            </div>
                 <input name="dyjsform[dyjsform_options]"
                        id="dyjsform_options"
                        value=''>
-            </div>`;
+            `;
     }
 
     getField(field, BSColumnWidth ) {
