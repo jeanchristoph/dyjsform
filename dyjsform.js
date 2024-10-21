@@ -6,23 +6,30 @@ export default class Dyjsform {
      * Exemple:  [{'html_element':'input','type': 'number', 'name': 'name_1','label': 'name_1', 'value':''},]
      * @param templateName
      */
-    constructor(templateName = 'classic') {
+    constructor(templateName = 'Classic') {
         this.entity = [{'html_element': 'input', 'type': 'number', 'name': 'name_1', 'label': 'name_1', 'value': ''},
             {'html_element': 'input', 'type': 'text', 'label': 'name_1', 'name': 'name_2', 'value': ''},
             {'html_element': 'input', 'type': 'password', 'label': 'name_1', 'name': 'name_3', 'value': ''},
         ];
         this.json = {};
         this.templateName = templateName;
-        this.template = this.getTemplate();
-        console.log(this.templateName );
-        this.initForm().then(() =>
-        {
-            this.initEventListeners();
-            this.handleInputKeyup();
-            // Initialiser le JSON à l'ouverture de la page
-            // this.loadJson();// Charger les données JSON au démarrage de la page
-            // this.generateJson(); // Générer le JSON initial
-        });
+        this.template = null;
+        this.initDyJsForm();
+    }
+
+    async initDyJsForm () {
+        console.log('initializing Dyjsform');
+        this.loadTemplate().then(
+            () => {
+                this.initForm();
+                this.initEventListeners();
+                this.handleInputKeyup();
+                // Initialiser le JSON à l'ouverture de la page
+                // this.loadJson();// Charger les données JSON au démarrage de la page
+                // this.generateJson(); // Générer le JSON initial
+
+            }
+        );
 
     }
 
@@ -41,18 +48,41 @@ export default class Dyjsform {
     }
 
     setJson(object){
+        this.isJsonString(object);
         this.json = object;
         return this;
     }
 
-    async getTemplate(){
-        const templateIndex = await import('./template'); // Assurez-vous d'importer la classe par défaut
-         // Assurez-vous d'importer la classe par défaut
-        return new templateIndex[this.templateName]();
+    isJsonString(str) {
+        try {
+            JSON.parse(str);
+        } catch (e) {
+            console.log(e)
+            return false;
+        }
+        return true;
     }
 
-    async initForm () {
-        const template = await this.template;
+
+    async loadTemplate(){
+        const templateIndex = await import('./template'); // Assurez-vous d'importer la classe par défaut
+         // Assurez-vous d'importer la classe par défaut
+        this.template = new templateIndex[this.templateName]();
+    }
+
+    getTemplate(){
+        return this.template;
+    }
+
+    async setTemplate(templateName){
+        this.templateName = templateName.charAt(0).toUpperCase()
+            + templateName.slice(1); // premiere lettre en maj pour correspondre à la classe
+        await this.initDyJsForm();
+
+    }
+
+    initForm () {
+        const template = this.template;
         document.querySelector('#dyjsform').innerHTML = template.getForm();// Utiliser la méthode getForm()
     }
 
@@ -87,7 +117,6 @@ export default class Dyjsform {
         // ecoute des inputs
         for (const entity of this.entity){
             const elements = document.querySelectorAll('.' + entity.name);
-            console.log(elements); // Vérifier les éléments trouvés
             if (elements.length > 0) {
                 elements.forEach((element) => {
                     element.addEventListener('keyup', () => {
@@ -120,7 +149,7 @@ export default class Dyjsform {
 
     // Fonction pour créer une entity dans le formulaire Bootstrap 5
     async createEntity() {
-        const template = await this.template;
+        const template = this.template;
         let begin = `<div class="row form-group align-items-center dyjsform_entity">`;
         let end = `</div>`;
 
