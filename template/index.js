@@ -1,1 +1,2 @@
-export { classic } from './classic.js';
+export { Classic } from './classic.js';
+export { Test } from './test.js';
