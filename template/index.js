@@ -1,4 +1,1 @@
-export const templateIndex = {
-    'default' : './template/default.js'
-}
-
+export { classic } from './classic.js';
