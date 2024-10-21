@@ -15,8 +15,7 @@ export default class template {
                 <input name="dyjsform[dyjsform_options]"
                        id="dyjsform_options"
                        value=''>
-            </div>
-        `
+            </div>`;
     }
 
     getField(field, BSColumnWidth ) {
