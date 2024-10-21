@@ -3,6 +3,7 @@ import Dyjsform from '../dyjsform.js';
 // MODULE ADHESION
 document.addEventListener('DOMContentLoaded', function() {
     let dyjsform = new Dyjsform();
+    dyjsform.setTemplate('test');
     const dyjsformEntities = [
         {'html_element':'input','type': 'date', 'name': 'name_1', 'label': 'date','value':''},
         {'html_element':'input','type': 'text', 'name': 'name_2', 'label': 'text','value':''},

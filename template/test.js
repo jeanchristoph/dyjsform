@@ -1,4 +1,4 @@
-export class Classic {
+export class Test {
 
     getForm() {
         return `
@@ -7,7 +7,7 @@ export class Classic {
                 <div class="col-md-3"></div>
                 <div class="col-md-6">
                     <button type="button" id="add_entity" class="form-control btn btn-primary">
-                        <i class="fas fa-plus"></i> Ajouter
+                        <i class="fas fa-plus"></i> TEST
                     </button>
                 </div>
                 <input name="dyjsform[dyjsform_options]"
