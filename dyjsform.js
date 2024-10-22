@@ -66,7 +66,7 @@ export default class Dyjsform {
 
     async loadTemplate(){
         const templateIndex = await import('./template'); // Assurez-vous d'importer la classe par défaut
-         // Assurez-vous d'importer la classe par défaut
+        // Assurez-vous d'importer la classe par défaut
         this.template = new templateIndex[this.templateName]();
     }
 
@@ -97,18 +97,17 @@ export default class Dyjsform {
         document.addEventListener('click', (event) => {
             if (event.target && event.target.classList.contains('remove_entity')) {
                 event.preventDefault();
-                console.log('remove');
                 event.target.closest('.dyjsform_entity').remove();
                 this.generateJson();  // Régénérer le JSON après la suppression
             }
         });
 
         // Déclencher la génération du JSON sur chaque keyup
-        document.querySelectorAll('.mod_topweb_adhesion_type_adhesion, .mod_topweb_adhesion_code_adhesion, .mod_topweb_adhesion_value').forEach((input) => {
-            input.addEventListener('keyup', () => {
-                this.generateJson();  // Générer le JSON sur keyup
-            });
-        });
+        // document.querySelectorAll('.mod_topweb_adhesion_type_adhesion, .mod_topweb_adhesion_code_adhesion, .mod_topweb_adhesion_value').forEach((input) => {
+        //     input.addEventListener('keyup', () => {
+        //         this.generateJson();  // Générer le JSON sur keyup
+        //     });
+        // });
 
     }
 
@@ -121,11 +120,11 @@ export default class Dyjsform {
                 elements.forEach((element) => {
                     element.addEventListener('keyup', () => {
                         this.generateJson();  // Générer le JSON sur keyup
-                        console.log("keyup");
+                        this.loadJson();
                     });
                     element.addEventListener('change', () => {
                         this.generateJson();  // Générer le JSON sur keyup
-                        console.log("change");
+                        this.loadJson();
                     });
                 });
             }
@@ -134,7 +133,6 @@ export default class Dyjsform {
 
     // Fonction pour générer le JSON
     generateJson() {
-        console.log('generateJson');
         let data = [];
         document.querySelectorAll('#dyjsform_container .dyjsform_entity').forEach((dyjsformEntity) =>  {
             let entityData = {};
@@ -148,38 +146,74 @@ export default class Dyjsform {
     }
 
     // Fonction pour créer une entity dans le formulaire Bootstrap 5
-    async createEntity() {
+    async createEntity(entity = this.entity) {
         const template = this.template;
         let begin = `<div class="row form-group align-items-center dyjsform_entity">`;
         let end = `</div>`;
 
-        const actionButtons = 1;
-        const fieldNumber = this.getEntity().length + actionButtons;
+        const actnBttnNmber = 1;
+        const fieldNumber = this.getEntity().length + actnBttnNmber;
         const BSColumnWidth = (12 / fieldNumber).toFixed(0);
         const deleteButton = template.getDeleteButton(BSColumnWidth);
 
         let HtmlForm = begin;
-        for (let entity of this.entity) {
-            console.log(this.entity);
-            console.log(entity);
-            HtmlForm += template.getField(entity, BSColumnWidth);
-        }
+        HtmlForm += await this.generateFields(entity, actnBttnNmber);
         HtmlForm += deleteButton;
         HtmlForm += end;
 
+        this.addEntityToHtml(HtmlForm);
+    }
+
+    // Fonction pour créer une entity dans le formulaire Bootstrap 5
+    async generateFields(entity, actnBttnNmber = 1) {
+        const fieldNumber = this.getEntity().length + actnBttnNmber;
+        const BSColumnWidth = (12 / fieldNumber).toFixed(0);
+        const template = this.template;
+        let Html = '';
+
+        for (let field of entity) {
+            Html += template.getField(field, BSColumnWidth);
+        }
+
+        return Html;
+    }
+
+    addEntityToHtml (HtmlForm) {
         document.querySelector('#dyjsform_container').innerHTML += HtmlForm; // Utiliser += pour ajouter le contenu
         this.handleInputKeyup();
     }
 
 // Charger le JSON à l'affichage de la page et générer les entitys
     loadJson() {
+        let entitiesArray = [];
+
         const jsonString = document.querySelector('#dyjsform_options').value;
         if (jsonString) {
             try {
-                const jsonData = JSON.parse(jsonString);
-                jsonData.forEach((item) =>  {
-                    this.createEntity(item.type_adhesion, item.code_adhesion, item.value);
-                });
+                const jsonString = document.querySelector('#dyjsform_options').value;
+                if (jsonString) {
+                    try {
+                        const jsonData = JSON.parse(jsonString);
+                        let entityArray = [];
+                        var entityClone = null;
+                        jsonData.forEach((jsonValues) =>  {
+                            entityClone = JSON.parse(JSON.stringify(this.entity));
+
+                            entityClone.forEach(entity => {
+                                for (let jsonName in jsonValues) {
+                                    if (entity.name == jsonName) {
+                                        entity.value = jsonValues[jsonName];
+                                    }
+                                };
+
+                            });
+
+                        });
+                        console.log(entityClone);
+                    } catch (error) {
+                        console.error("Erreur lors de l'analyse du JSON : ", error);
+                    }
+                }
             } catch (error) {
                 console.error("Erreur lors de l'analyse du JSON : ", error);
             }
