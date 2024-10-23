@@ -21,12 +21,11 @@ export default class Dyjsform {
         console.log('initializing Dyjsform');
         this.loadTemplate().then(
             () => {
-                this.initForm();
+                this.initForm(this.loadJson());
                 this.initEventListeners();
                 this.handleInputKeyup();
                 // Initialiser le JSON à l'ouverture de la page
-                // this.loadJson();// Charger les données JSON au démarrage de la page
-                // this.generateJson(); // Générer le JSON initial
+                this.generateJson(); // Générer le JSON initial
 
             }
         );
@@ -70,6 +69,23 @@ export default class Dyjsform {
         this.template = new templateIndex[this.templateName]();
     }
 
+    async refreshForm (json = null){
+        console.log('refreshing Dyjsform');
+        this.initForm();
+        let entities = json;
+        console.log(entities);
+        if (entities){
+            console.log('entities');
+            for (const entity of entities){
+                await this.createEntity(entity);
+            }
+        } else {
+            console.log('else');
+            await this.createEntity();
+        }
+
+    }
+
     getTemplate(){
         return this.template;
     }
@@ -83,14 +99,17 @@ export default class Dyjsform {
 
     initForm () {
         const template = this.template;
-        document.querySelector('#dyjsform').innerHTML = template.getForm();// Utiliser la méthode getForm()
+        const json = this.generateJson()
+        console.log(json);
+        document.querySelector('#dyjsform').innerHTML = template.getForm(json);// Utiliser la méthode getForm()
     }
 
     async initEventListeners () {
         // Ajouter une nouvelle ligne
         document.getElementById('add_entity').addEventListener('click', (event) => {
+            console.log('add_entity');
             event.preventDefault();
-            this.createEntity();
+            this.refreshForm();
         });
 
         // Supprimer une ligne
@@ -98,33 +117,27 @@ export default class Dyjsform {
             if (event.target && event.target.classList.contains('remove_entity')) {
                 event.preventDefault();
                 event.target.closest('.dyjsform_entity').remove();
-                this.generateJson();  // Régénérer le JSON après la suppression
+                let json = this.generateJson();
+                this.refreshForm(json);
             }
         });
-
-        // Déclencher la génération du JSON sur chaque keyup
-        // document.querySelectorAll('.mod_topweb_adhesion_type_adhesion, .mod_topweb_adhesion_code_adhesion, .mod_topweb_adhesion_value').forEach((input) => {
-        //     input.addEventListener('keyup', () => {
-        //         this.generateJson();  // Générer le JSON sur keyup
-        //     });
-        // });
 
     }
 
 
-    handleInputKeyup () {
+    async handleInputKeyup () {
         // ecoute des inputs
         for (const entity of this.entity){
             const elements = document.querySelectorAll('.' + entity.name);
             if (elements.length > 0) {
                 elements.forEach((element) => {
-                    element.addEventListener('keyup', () => {
+                    element.addEventListener('keyup', async () => {
+                        await this.refreshForm();
                         this.generateJson();  // Générer le JSON sur keyup
-                        this.loadJson();
                     });
-                    element.addEventListener('change', () => {
+                    element.addEventListener('change', async () => {
+                        await this.refreshForm();
                         this.generateJson();  // Générer le JSON sur keyup
-                        this.loadJson();
                     });
                 });
             }
@@ -133,16 +146,25 @@ export default class Dyjsform {
 
     // Fonction pour générer le JSON
     generateJson() {
+        console.log('generateJson');
+        let result = '';
         let data = [];
-        document.querySelectorAll('#dyjsform_container .dyjsform_entity').forEach((dyjsformEntity) =>  {
-            let entityData = {};
-            for (let entity of this.entity) {
-                entityData[entity.name] = dyjsformEntity.querySelector('.' + entity.name).value;
+        if (document.querySelectorAll('#dyjsform_container .dyjsform_entity')){
+            document.querySelectorAll('#dyjsform_container .dyjsform_entity').forEach((dyjsformEntity) =>  {
+                let entityData = {};
+                for (let entity of this.entity) {
+                    entityData[entity.name] = dyjsformEntity.querySelector('.' + entity.name).value;
+                }
+                data.push(entityData);
+            });
+            if (data.length){
+                result = JSON.stringify(data, null);
+                document.querySelector('#dyjsform_options').value = result;
+                console.log('result');
+                console.log(result);
             }
-            data.push(entityData);
-        });
-
-        document.querySelector('#dyjsform_options').value = JSON.stringify(data, null);
+        }
+        return result;
     }
 
     // Fonction pour créer une entity dans le formulaire Bootstrap 5
@@ -186,41 +208,45 @@ export default class Dyjsform {
 // Charger le JSON à l'affichage de la page et générer les entitys
     loadJson() {
         let entitiesArray = [];
+        let entityArray = [];
+        if (document.querySelector('#dyjsform_options') ){
 
-        const jsonString = document.querySelector('#dyjsform_options').value;
-        if (jsonString) {
-            try {
-                const jsonString = document.querySelector('#dyjsform_options').value;
-                if (jsonString) {
-                    try {
-                        const jsonData = JSON.parse(jsonString);
-                        let entityArray = [];
-                        var entityClone = null;
-                        jsonData.forEach((jsonValues) =>  {
-                            entityClone = JSON.parse(JSON.stringify(this.entity));
 
-                            entityClone.forEach(entity => {
-                                for (let jsonName in jsonValues) {
-                                    if (entity.name == jsonName) {
-                                        entity.value = jsonValues[jsonName];
+            const jsonString = document.querySelector('#dyjsform_options').value;
+            if (jsonString) {
+                try {
+                    const jsonString = document.querySelector('#dyjsform_options').value;
+                    console.log(jsonString);
+                    if (jsonString) {
+                        try {
+                            const jsonData = JSON.parse(jsonString);
+                            let entityArray = [];
+                            var entityClone = null;
+                            jsonData.forEach((jsonValues) =>  {
+                                entityClone = JSON.parse(JSON.stringify(this.entity));
+                                entityClone.forEach(entity => {
+                                    for (let jsonName in jsonValues) {
+                                        if (entity.name === jsonName) {
+                                            entity.value = jsonValues[jsonName];
+                                        }
                                     }
-                                };
 
+                                });
+                                entityArray.push(entityClone)
                             });
-
-                        });
-                        console.log(entityClone);
-                    } catch (error) {
-                        console.error("Erreur lors de l'analyse du JSON : ", error);
+                            return JSON.stringify(entityArray, null);
+                        } catch (error) {
+                            console.error("Erreur lors de l'analyse du JSON : ", error);
+                        }
                     }
+                } catch (error) {
+                    console.error("Erreur lors de l'analyse du JSON : ", error);
                 }
-            } catch (error) {
-                console.error("Erreur lors de l'analyse du JSON : ", error);
             }
         }
+        return JSON.stringify(entityArray, null);
+
     }
-
-
 
 }
 
