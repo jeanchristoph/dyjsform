@@ -1,6 +1,6 @@
 export class Classic {
 
-    getForm() {
+    getForm(json = '') {
         return `
             <div id="dyjsform_container"></div>
             <div  id="dyjsform_footer" class=" row form-group align-items-center">
@@ -13,7 +13,7 @@ export class Classic {
             </div>
                 <input name="dyjsform[dyjsform_options]"
                        id="dyjsform_options"
-                       value=''>
+                       value='${json}'>
             `;
     }
 
