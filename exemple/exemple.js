@@ -12,5 +12,6 @@ document.addEventListener('DOMContentLoaded', function() {
         {'html_element':'input','type': 'password', 'name': 'name_5', 'label': 'password', 'value':''},
     ];
     dyjsform.setEntity(dyjsformEntities);
+    dyjsform.init();
 // MODULE ADHESION FIN
 });
