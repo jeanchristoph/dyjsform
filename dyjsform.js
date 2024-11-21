@@ -14,10 +14,10 @@ export default class Dyjsform {
         this.json = {};
         this.templateName = templateName;
         this.template = null;
-        this.initDyJsForm();
+
     }
 
-    async initDyJsForm () {
+    async init () {
         console.log('initializing Dyjsform');
         this.loadTemplate().then(
             () => {
@@ -25,11 +25,11 @@ export default class Dyjsform {
                 this.initEventListeners();
                 this.handleInputKeyup();
                 // Initialiser le JSON à l'ouverture de la page
-                this.generateJson(); // Générer le JSON initial
+                // this.generateJson(); // Générer le JSON initial
 
             }
         );
-
+        return this;
     }
 
     getEntity(){
@@ -69,21 +69,25 @@ export default class Dyjsform {
         this.template = new templateIndex[this.templateName]();
     }
 
-    async refreshForm (json = null){
+    async refreshForm (){
+        let json = this.generateJson();
+        console.log(json);
         console.log('refreshing Dyjsform');
         this.initForm();
-        let entities = json;
-        console.log(entities);
-        if (entities){
-            console.log('entities');
-            for (const entity of entities){
-                await this.createEntity(entity);
-            }
+        console.log('json');
+        console.log(json);
+        if (typeof(json) !== 'undefined' && typeof(json.entity) !== 'undefined') {
+            console.log(json);
+            console.log('json');
+            // for (const entity of entities.entity){
+            await this.createEntity(json.entity);
+            // }
         } else {
             console.log('else');
             await this.createEntity();
         }
-
+        this.generateJson();
+        return this;
     }
 
     getTemplate(){
@@ -93,15 +97,15 @@ export default class Dyjsform {
     async setTemplate(templateName){
         this.templateName = templateName.charAt(0).toUpperCase()
             + templateName.slice(1); // premiere lettre en maj pour correspondre à la classe
-        await this.initDyJsForm();
-
+        return this;
     }
 
-    initForm () {
+    initForm (json) {
         const template = this.template;
-        const json = this.generateJson()
+        // const json = this.generateJson()
         console.log(json);
         document.querySelector('#dyjsform').innerHTML = template.getForm(json);// Utiliser la méthode getForm()
+        return this;
     }
 
     async initEventListeners () {
@@ -109,6 +113,9 @@ export default class Dyjsform {
         document.getElementById('add_entity').addEventListener('click', (event) => {
             console.log('add_entity');
             event.preventDefault();
+            // let json = this.generateJson();
+            //TODO refreshForm ne doit servir qu'a raffraichir le formulaire qu'une fois que le json est ok
+            //TODO Et non ajouter ou supprimer une ligne
             this.refreshForm();
         });
 
@@ -117,11 +124,17 @@ export default class Dyjsform {
             if (event.target && event.target.classList.contains('remove_entity')) {
                 event.preventDefault();
                 event.target.closest('.dyjsform_entity').remove();
-                let json = this.generateJson();
-                this.refreshForm(json);
+//TODO Il faut travailler avec le json et non avec le DOM
+                //TODO refreshForm ne doit servir qu'a raffraichir le formulaire qu'une fois que le json est ok
+
+                // let json = this.generateJson();
+                // console.log('un json');
+                // console.log(json);
+                // return false;
+                this.refreshForm();
             }
         });
-
+        return this;
     }
 
 
@@ -133,15 +146,14 @@ export default class Dyjsform {
                 elements.forEach((element) => {
                     element.addEventListener('keyup', async () => {
                         await this.refreshForm();
-                        this.generateJson();  // Générer le JSON sur keyup
                     });
                     element.addEventListener('change', async () => {
                         await this.refreshForm();
-                        this.generateJson();  // Générer le JSON sur keyup
                     });
                 });
             }
         }
+        return this;
     }
 
     // Fonction pour générer le JSON
@@ -149,21 +161,30 @@ export default class Dyjsform {
         console.log('generateJson');
         let result = '';
         let data = [];
-        if (document.querySelectorAll('#dyjsform_container .dyjsform_entity')){
+        if (document.querySelectorAll('#dyjsform_container .dyjsform_entity').length){
+            console.log('if')
+            console.log('document.querySelectorAll(\'#dyjsform_container .dyjsform_entity\')')
+            console.log(document.querySelectorAll('#dyjsform_container .dyjsform_entity'))
             document.querySelectorAll('#dyjsform_container .dyjsform_entity').forEach((dyjsformEntity) =>  {
+                console.log('foreach')
                 let entityData = {};
                 for (let entity of this.entity) {
+                    console.log('entity')
+                    console.log(entity)
                     entityData[entity.name] = dyjsformEntity.querySelector('.' + entity.name).value;
                 }
+                console.log('entityData')
+                console.log(entityData)
                 data.push(entityData);
             });
-            if (data.length){
-                result = JSON.stringify(data, null);
-                document.querySelector('#dyjsform_options').value = result;
-                console.log('result');
-                console.log(result);
-            }
+
         }
+
+        result = JSON.stringify(data, null);
+        document.querySelector('#dyjsform_options').value = result;
+        console.log('result');
+        console.log(result);
+
         return result;
     }
 
@@ -192,10 +213,13 @@ export default class Dyjsform {
         const BSColumnWidth = (12 / fieldNumber).toFixed(0);
         const template = this.template;
         let Html = '';
-
+        console.log(typeof(entity));
+        console.log(typeof([]))
+        console.log(entity)
         for (let field of entity) {
             Html += template.getField(field, BSColumnWidth);
         }
+
 
         return Html;
     }
@@ -207,6 +231,7 @@ export default class Dyjsform {
 
 // Charger le JSON à l'affichage de la page et générer les entitys
     loadJson() {
+        console.log('loadJson');
         let entitiesArray = [];
         let entityArray = [];
         if (document.querySelector('#dyjsform_options') ){
