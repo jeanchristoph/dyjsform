@@ -33,7 +33,6 @@ export default class Dyjsform {
 
     setEntity(array){
         this.entity = array;
-        this.handleInputKeyup();
         return this;
     }
 
