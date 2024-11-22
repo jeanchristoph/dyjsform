@@ -13,7 +13,7 @@ export class Classic {
             </div>
                 <input name="dyjsform[dyjsform_options]"
                        id="dyjsform_options"
-                       value='${json}'>
+                       value='${json.entity ? json.entity : '[]'}'>
             `;
     }
 
