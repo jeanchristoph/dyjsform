@@ -22,6 +22,7 @@ export default class Dyjsform {
         this.loadTemplate().then(
             () => {
                 this.initForm();
+                this.initHandlers();
             }
         );
         return this;
@@ -86,7 +87,9 @@ export default class Dyjsform {
         console.log('refreshing Dyjsform');
         this.initForm();
         await this.rowsUpdate();
+        this.initHandlers();
         this.generateJson();
+        console.log(this.getJson());
         return this;
     }
 
@@ -104,43 +107,47 @@ export default class Dyjsform {
         let json = this.json;
         const template = this.template;
         document.querySelector('#dyjsform').innerHTML = template.getForm(json);// Utiliser la méthode getForm()
-        this.initEventListeners();
-        this.handleInputKeyup();
         return this;
     }
 
+    initHandlers (){
+        this.initEventListeners();
+        this.handleInputKeyup();
+    }
     async initEventListeners () {
         // Ajouter une nouvelle ligne
-        document.getElementById('add_entity').addEventListener('click', (event) => {
-            console.log('add_entity');
-            event.preventDefault();
-            let json = this.getJson();
-            console.log(typeof(json));
-            console.log(json);
-            json.push(this.entity);
-            this.setJson(json);
-            this.generateJson();
-            //TODO refreshForm ne doit servir qu'a raffraichir le formulaire qu'une fois que le json est ok
-            //TODO Et non ajouter ou supprimer une ligne
-            this.refreshForm();
+        if (document.getElementById('add_entity')) {
+            document.getElementById('add_entity').addEventListener('click', (event) => {
+                console.log('add_entity');
+                event.preventDefault();
+                let json = this.getJson();
+                json.push(this.entity);
+                this.setJson(json);
+                this.generateJson();
+                this.refreshForm();
 
-        });
+            });
+        }
 
         // Supprimer une ligne
-        document.addEventListener('click', (event) => {
-            if (event.target && event.target.classList.contains('remove_entity')) {
+        // document.addEventListener('click', (event) => {
+        if (document.getElementById('remove_entity')){
+            console.log('document.getElementById(remove_entity)');
+            document.getElementById('remove_entity').addEventListener('click', (event) => {
+                // if (event.target && event.target.classList.contains('remove_entity')) {
+                console.log('remove_entity');
                 event.preventDefault();
-                event.target.closest('.dyjsform_entity').remove();
-//TODO Il faut travailler avec le json et non avec le DOM
-                //TODO refreshForm ne doit servir qu'a raffraichir le formulaire qu'une fois que le json est ok
-
-                // let json = this.generateJson();
-                // console.log('un json');
-                // console.log(json);
-                // return false;
+                //     event.target.closest('.dyjsform_entity').remove();
+                //     this.refreshForm();
+                // }
+                let json = this.getJson();
+                json.pop();
+                this.setJson(json);
+                this.generateJson();
                 this.refreshForm();
-            }
-        });
+            });
+        }
+
         return this;
     }
 
@@ -188,7 +195,7 @@ export default class Dyjsform {
         }
 
         // result = JSON.stringify(data, null);
-        // document.querySelector('#dyjsform_options').value = result;
+        document.querySelector('#dyjsform_options').value = JSON.stringify(data, null);
         // console.log('result');
         // console.log(result);
 
