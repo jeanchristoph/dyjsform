@@ -14,4 +14,5 @@ document.addEventListener('DOMContentLoaded', function() {
     dyjsform.setEntity(dyjsformEntities);
     dyjsform.init();
 // MODULE ADHESION FIN
+    // TODO laisser aussi la possibilité plus tard de faire juste un formaulaire banal sans ajout ni suppression avec un bouton valider.
 });
