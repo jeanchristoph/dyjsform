@@ -1,32 +1,23 @@
+import JsonService from './Service/JsonService.js';
+import TemplateService from './Service/TemplateService.js';
 
-export default class Dyjsform {
+export default class DyJsForm {
 
     /**
      *
      * Exemple:  [{'html_element':'input','type': 'number', 'name': 'name_1','label': 'name_1', 'value':''},]
-     * @param templateName
      */
-    constructor(templateName = 'classic') {
+    constructor() {
         this._entity = [{'html_element': 'input', 'type': 'number', 'name': 'name_1', 'label': 'name_1', 'value': '', 'content' : '', 'class' : ''},
             {'html_element': 'input', 'type': 'text', 'label': 'name_1', 'name': 'name_2', 'value': '', 'content' : '', 'class' : ''},
             {'html_element': 'input', 'type': 'password', 'label': 'name_1', 'name': 'name_3', 'value': '', 'content' : '', 'class' : ''},
         ];
         this._json = [];
         this._outputJson = [];
-        this._templateName = templateName;
+        this._templateName = 'classic';
         this._template = null;
-
-    }
-
-    init () {
-        console.log('initializing Dyjsform');
-        this.loadTemplate().then(
-            () => {
-                this.initForm();
-                this.initHandlers();
-            }
-        );
-        return this;
+        this.jsonService = new JsonService();
+        this.templateService = new TemplateService();
     }
 
     get entity(){
@@ -38,10 +29,33 @@ export default class Dyjsform {
         return this;
     }
 
+
+    get template(){
+        return this._template;
+    }
+
+    set template(templateName){
+        this._templateName = templateName.charAt(0).toUpperCase()
+            + templateName.slice(1); // premiere lettre en maj pour correspondre à la classe
+
+        return this;
+    }
+
+    init () {
+        console.log('initializing Dyjsform');
+        this.loadTemplate().then(
+            () => {
+                this.formRender();
+                this.initHandlers();
+            }
+        );
+        return this;
+    }
+
     jsonRefresh(json){
         switch (typeof json) {
             case 'string':
-                this._json = this.strToJson(json);
+                this._json = this.jsonService.strToJson(json);
                 break
             default:
                 this._json = json;
@@ -52,56 +66,23 @@ export default class Dyjsform {
         return this;
     }
 
-    isJsonString(str) {
-        try {
-            JSON.parse(str);
-        } catch (e) {
-            console.log(e)
-            return false;
-        }
-        return true;
-    }
-
-    jsonToStr(jsonObject){
-        return JSON.stringify(jsonObject, null, 2)
-    }
-
-    strToJson(str) {
-        try {
-            return JSON.parse(str);
-        } catch (error) {
-            console.error("Erreur lors du parsing JSON :", error);
-            return null; // Ou une valeur par défaut comme {}
-        }
-    }
-
     async loadTemplate(){
         const templateIndex = await import('./template'); // Assurez-vous d'importer la classe par défaut
         // Assurez-vous d'importer la classe par défaut
         this._template = new templateIndex[this._templateName]();
     }
 
-    refreshForm (json = null){
+    refreshForm (){
         console.log('refreshing Dyjsform');
-        this.initForm();
-        this.rowsUpdate();
+        this.formRender();
+        this.rowRender();
         this.initHandlers();
         this.writeOutputJson();
         console.log(this._json);
         return this;
     }
 
-    get template(){
-        return this._template;
-    }
-
-    set template(templateName){
-        this._templateName = templateName.charAt(0).toUpperCase()
-            + templateName.slice(1); // premiere lettre en maj pour correspondre à la classe
-        return this;
-    }
-
-    initForm () {
+    formRender () {
         let json = this._json;
         const template = this._template;
         document.querySelector('#dyjsform').innerHTML = template.getForm(json);// Utiliser la méthode getForm()
@@ -165,15 +146,7 @@ export default class Dyjsform {
     }
 
     updateOutputJson () {
-        var outputJson =[];
-        for (const row of this._json){
-            let rowJson = [];
-            for (let field of row) {
-                rowJson.push( { [field['name']] : field['value'] });
-            }
-            outputJson.push(rowJson);
-        }
-        this._outputJson =  outputJson;
+        this._outputJson =  this.jsonService.reduceByNameValue(this._json);
     }
 
     // Fonction pour générer le JSON
@@ -183,7 +156,7 @@ export default class Dyjsform {
     }
 
     // Fonction pour créer une entity dans le formulaire Bootstrap 5
-    rowsUpdate() {
+    rowRender() {
         const template = this._template;
         let begin = `<div class="row form-group align-items-center dyjsform_entity">`;
         let end = `</div>`;
@@ -191,16 +164,14 @@ export default class Dyjsform {
         let HtmlForm = begin;
         for (let row of rows )
         {
-            HtmlForm +=  this.generateFields(row);
+            HtmlForm +=  this.fieldRender(row);
         }
-
         HtmlForm += end;
-
-        this.addEntityToHtml(HtmlForm);
+        document.querySelector('#dyjsform_container').innerHTML += HtmlForm; // Utiliser += pour ajouter le contenu
     }
 
     // Fonction pour créer une entity dans le formulaire Bootstrap 5
-    generateFields(json) {
+    fieldRender(json) {
         const fieldNumber = this._entity.length;
         const BSColumnWidth = (12 / fieldNumber).toFixed(0);
         const template = this._template;
@@ -208,14 +179,7 @@ export default class Dyjsform {
         for (let field of json) {
             Html += template.getField(field, BSColumnWidth);
         }
-
-
         return Html;
-    }
-
-    addEntityToHtml (HtmlForm) {
-        document.querySelector('#dyjsform_container').innerHTML += HtmlForm; // Utiliser += pour ajouter le contenu
-        this.handleInputKeyup();
     }
 
 // Charger le JSON à l'affichage de la page et générer les entitys

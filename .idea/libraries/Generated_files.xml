@@ -5,20 +5,20 @@
         <item url="file://$PROJECT_DIR$/dyjsform.min.js" />
         <item url="file://$PROJECT_DIR$/exemple/exemple.min.js" />
         <item url="file://$PROJECT_DIR$/formEvents.min.js" />
-        <item url="file://$PROJECT_DIR$/jsonHandler.min.js" />
+        <item url="file://$PROJECT_DIR$/service/dyJsFormService.min.js" />
         <item url="file://$PROJECT_DIR$/template/classic.min.js" />
         <item url="file://$PROJECT_DIR$/template/index.min.js" />
         <item url="file://$PROJECT_DIR$/template/test.min.js" />
       </sourceFilesUrls>
     </properties>
     <CLASSES>
-      <root url="file://$PROJECT_DIR$/dyjsform.min.js" />
       <root url="file://$PROJECT_DIR$/exemple/exemple.min.js" />
       <root url="file://$PROJECT_DIR$/formEvents.min.js" />
       <root url="file://$PROJECT_DIR$/template/classic.min.js" />
       <root url="file://$PROJECT_DIR$/template/index.min.js" />
       <root url="file://$PROJECT_DIR$/template/test.min.js" />
-      <root url="file://$PROJECT_DIR$/JsonHandler.min.js" />
+      <root url="file://$PROJECT_DIR$/DyJsForm.min.js" />
+      <root url="file://$PROJECT_DIR$/Service/JsonService.min.js" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
