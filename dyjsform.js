@@ -7,9 +7,9 @@ export default class Dyjsform {
      * @param templateName
      */
     constructor(templateName = 'classic') {
-        this.entity = [{'html_element': 'input', 'type': 'number', 'name': 'name_1', 'label': 'name_1', 'value': ''},
-            {'html_element': 'input', 'type': 'text', 'label': 'name_1', 'name': 'name_2', 'value': ''},
-            {'html_element': 'input', 'type': 'password', 'label': 'name_1', 'name': 'name_3', 'value': ''},
+        this.entity = [{'html_element': 'input', 'type': 'number', 'name': 'name_1', 'label': 'name_1', 'value': '', 'content' : '', 'class' : ''},
+            {'html_element': 'input', 'type': 'text', 'label': 'name_1', 'name': 'name_2', 'value': '', 'content' : '', 'class' : ''},
+            {'html_element': 'input', 'type': 'password', 'label': 'name_1', 'name': 'name_3', 'value': '', 'content' : '', 'class' : ''},
         ];
         this.json = [];
         this.templateName = templateName;
@@ -116,9 +116,9 @@ export default class Dyjsform {
     }
     async initEventListeners () {
         // Ajouter une nouvelle ligne
-        if (document.getElementById('add_entity')) {
-            document.getElementById('add_entity').addEventListener('click', (event) => {
-                console.log('add_entity');
+        if (document.getElementById('djf_action_add')) {
+            document.getElementById('djf_action_add').addEventListener('click', (event) => {
+                console.log('djf_action_add');
                 event.preventDefault();
                 let json = this.getJson();
                 json.push(this.entity);
@@ -131,15 +131,11 @@ export default class Dyjsform {
 
         // Supprimer une ligne
         // document.addEventListener('click', (event) => {
-        if (document.getElementById('remove_entity')){
-            console.log('document.getElementById(remove_entity)');
-            document.getElementById('remove_entity').addEventListener('click', (event) => {
-                // if (event.target && event.target.classList.contains('remove_entity')) {
-                console.log('remove_entity');
+        if (document.getElementById('djf_action_remove')){
+            console.log('document.getElementById(djf_action_remove)');
+            document.getElementById('djf_action_remove').addEventListener('click', (event) => {
+                console.log('djf_action_remove');
                 event.preventDefault();
-                //     event.target.closest('.dyjsform_entity').remove();
-                //     this.refreshForm();
-                // }
                 let json = this.getJson();
                 json.pop();
                 this.setJson(json);
@@ -183,8 +179,6 @@ export default class Dyjsform {
                 console.log('foreach')
                 let entityData = {};
                 for (let entity of this.entity) {
-                    console.log('entity')
-                    console.log(entity)
                     entityData[entity.name] = dyjsformEntity.querySelector('.' + entity.name).value;
                 }
                 console.log('entityData')
@@ -196,9 +190,6 @@ export default class Dyjsform {
 
         // result = JSON.stringify(data, null);
         document.querySelector('#dyjsform_options').value = JSON.stringify(data, null);
-        // console.log('result');
-        // console.log(result);
-
         return result;
     }
 
@@ -208,33 +199,23 @@ export default class Dyjsform {
         let begin = `<div class="row form-group align-items-center dyjsform_entity">`;
         let end = `</div>`;
         let rows = this.getJson();
-
-        const actnBttnNmber = 1;
-        const fieldNumber = this.getEntity().length + actnBttnNmber;
-        const BSColumnWidth = (12 / fieldNumber).toFixed(0);
-        const deleteButton = template.getDeleteButton(BSColumnWidth);
-
         let HtmlForm = begin;
         for (let row of rows )
         {
-            HtmlForm += await this.generateFields(row, actnBttnNmber);
+            HtmlForm += await this.generateFields(row);
         }
 
-        HtmlForm += deleteButton;
         HtmlForm += end;
 
         this.addEntityToHtml(HtmlForm);
     }
 
     // Fonction pour créer une entity dans le formulaire Bootstrap 5
-    async generateFields(json, actnBttnNmber = 1) {
-        const fieldNumber = this.getEntity().length + actnBttnNmber;
+    async generateFields(json) {
+        const fieldNumber = this.getEntity().length;
         const BSColumnWidth = (12 / fieldNumber).toFixed(0);
         const template = this.template;
         let Html = '';
-        console.log(typeof(json));
-        console.log(typeof([]))
-        console.log(json)
         for (let field of json) {
             Html += template.getField(field, BSColumnWidth);
         }
