@@ -1,8 +1,8 @@
-import Dyjsform from '../dyjsform.js';
+import DyJsForm from '../DyJsForm.js';
 
 // MODULE ADHESION
 document.addEventListener('DOMContentLoaded', function() {
-    let dyjsform = new Dyjsform();
+    let dyjsform = new DyJsForm();
     dyjsform.template = 'classic';
     dyjsform.entity = [
         {
