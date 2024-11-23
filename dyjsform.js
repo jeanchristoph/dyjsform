@@ -7,13 +7,14 @@ export default class Dyjsform {
      * @param templateName
      */
     constructor(templateName = 'classic') {
-        this.entity = [{'html_element': 'input', 'type': 'number', 'name': 'name_1', 'label': 'name_1', 'value': '', 'content' : '', 'class' : ''},
+        this._entity = [{'html_element': 'input', 'type': 'number', 'name': 'name_1', 'label': 'name_1', 'value': '', 'content' : '', 'class' : ''},
             {'html_element': 'input', 'type': 'text', 'label': 'name_1', 'name': 'name_2', 'value': '', 'content' : '', 'class' : ''},
             {'html_element': 'input', 'type': 'password', 'label': 'name_1', 'name': 'name_3', 'value': '', 'content' : '', 'class' : ''},
         ];
-        this.json = [];
-        this.templateName = templateName;
-        this.template = null;
+        this._json = [];
+        this._outputJson = [];
+        this._templateName = templateName;
+        this._template = null;
 
     }
 
@@ -29,27 +30,39 @@ export default class Dyjsform {
     }
 
     getEntity(){
-        return this.entity;
+        return this._entity;
     }
 
     setEntity(array){
-        this.entity = array;
+        this._entity = array;
         return this;
     }
 
     getJson(){
-        return this.json;
+        return this._json;
     }
 
-    setJson(json){
+    jsonRefresh(json){
         switch (typeof json) {
             case 'string':
-                this.json = this.strToJson(json);
+                this._json = this.strToJson(json);
                 break
             default:
-                this.json = json;
+                this._json = json;
                 break;
         }
+        this.updateOutputJson();
+        this.writeOutputJson()
+        return this;
+    }
+
+
+    get nameValuejson() {
+        return this._outputJson;
+    }
+
+    set nameValuejson(value) {
+        this._outputJson = value;
         return this;
     }
 
@@ -80,7 +93,7 @@ export default class Dyjsform {
     async loadTemplate(){
         const templateIndex = await import('./template'); // Assurez-vous d'importer la classe par défaut
         // Assurez-vous d'importer la classe par défaut
-        this.template = new templateIndex[this.templateName]();
+        this._template = new templateIndex[this._templateName]();
     }
 
     async refreshForm (json = null){
@@ -88,24 +101,24 @@ export default class Dyjsform {
         this.initForm();
         await this.rowsUpdate();
         this.initHandlers();
-        this.generateJson();
+        this.writeOutputJson();
         console.log(this.getJson());
         return this;
     }
 
     getTemplate(){
-        return this.template;
+        return this._template;
     }
 
     async setTemplate(templateName){
-        this.templateName = templateName.charAt(0).toUpperCase()
+        this._templateName = templateName.charAt(0).toUpperCase()
             + templateName.slice(1); // premiere lettre en maj pour correspondre à la classe
         return this;
     }
 
     initForm () {
-        let json = this.json;
-        const template = this.template;
+        let json = this._json;
+        const template = this._template;
         document.querySelector('#dyjsform').innerHTML = template.getForm(json);// Utiliser la méthode getForm()
         return this;
     }
@@ -121,9 +134,9 @@ export default class Dyjsform {
                 console.log('djf_action_add');
                 event.preventDefault();
                 let json = this.getJson();
-                json.push(this.entity);
-                this.setJson(json);
-                this.generateJson();
+                json.push(this._entity);
+                this.jsonRefresh(json);
+                this.writeOutputJson();
                 this.refreshForm();
 
             });
@@ -138,8 +151,8 @@ export default class Dyjsform {
                 event.preventDefault();
                 let json = this.getJson();
                 json.pop();
-                this.setJson(json);
-                this.generateJson();
+                this.jsonRefresh(json);
+                this.writeOutputJson();
                 this.refreshForm();
             });
         }
@@ -150,7 +163,7 @@ export default class Dyjsform {
 
     async handleInputKeyup () {
         // ecoute des inputs
-        for (const entity of this.entity){
+        for (const entity of this._entity){
             const elements = document.querySelectorAll('.' + entity.name);
             if (elements.length > 0) {
                 elements.forEach((element) => {
@@ -166,36 +179,27 @@ export default class Dyjsform {
         return this;
     }
 
-    // Fonction pour générer le JSON
-    generateJson() {
-        console.log('generateJson');
-        let result = '';
-        let data = [];
-        if (document.querySelectorAll('#dyjsform_container .dyjsform_entity').length){
-            console.log('if')
-            console.log('document.querySelectorAll(\'#dyjsform_container .dyjsform_entity\')')
-            console.log(document.querySelectorAll('#dyjsform_container .dyjsform_entity'))
-            document.querySelectorAll('#dyjsform_container .dyjsform_entity').forEach((dyjsformEntity) =>  {
-                console.log('foreach')
-                let entityData = {};
-                for (let entity of this.entity) {
-                    entityData[entity.name] = dyjsformEntity.querySelector('.' + entity.name).value;
-                }
-                console.log('entityData')
-                console.log(entityData)
-                data.push(entityData);
-            });
-
+    updateOutputJson () {
+        var nameValueJson =[];
+        for (const row of this._json){
+            let rowJson = [];
+            for (let field of row) {
+                rowJson.push( { [field['name']] : field['value'] });
+            }
+            nameValueJson.push(rowJson);
         }
+        this.nameValuejson =  nameValueJson;
+    }
 
-        // result = JSON.stringify(data, null);
-        document.querySelector('#dyjsform_options').value = JSON.stringify(data, null);
-        return result;
+    // Fonction pour générer le JSON
+    writeOutputJson() {
+        document.querySelector('#dyjsform_options').value = JSON.stringify(this.nameValuejson, null);
+        return this;
     }
 
     // Fonction pour créer une entity dans le formulaire Bootstrap 5
     async rowsUpdate() {
-        const template = this.template;
+        const template = this._template;
         let begin = `<div class="row form-group align-items-center dyjsform_entity">`;
         let end = `</div>`;
         let rows = this.getJson();
@@ -214,7 +218,7 @@ export default class Dyjsform {
     async generateFields(json) {
         const fieldNumber = this.getEntity().length;
         const BSColumnWidth = (12 / fieldNumber).toFixed(0);
-        const template = this.template;
+        const template = this._template;
         let Html = '';
         for (let field of json) {
             Html += template.getField(field, BSColumnWidth);
@@ -244,7 +248,7 @@ export default class Dyjsform {
                     //         const jsonData = JSON.parse(jsonString);
                     //         var entityClone = null;
                     //         jsonData.forEach((jsonValues) =>  {
-                    //             entityClone = JSON.parse(JSON.stringify(this.entity));
+                    //             entityClone = JSON.parse(JSON.stringify(this._entity));
                     //             entityClone.forEach(entity => {
                     //                 for (let jsonName in jsonValues) {
                     //                     if (entity.name === jsonName) {
@@ -264,7 +268,7 @@ export default class Dyjsform {
                 }
             }
         }
-        this.setJson(JSON.stringify(entityArray, null));
+        this.jsonRefresh(JSON.stringify(entityArray, null));
         return this;
 
     }

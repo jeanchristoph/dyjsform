@@ -11,9 +11,9 @@ export class Classic {
                     </button>
                 </div>
             </div>
-                <input name="dyjsform[dyjsform_options]"
+                <textarea rows="30" cols="150" name="dyjsform[dyjsform_options]"
                        id="dyjsform_options"
-                       value='${json.entity ? json.entity : '[]'}'>
+                       >${json.entity ? json.entity : '[]'}</textarea>
             `;
     }
 
