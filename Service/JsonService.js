@@ -1,5 +1,50 @@
 export default class JsonService {
     constructor() {
+        this._json = [];
+        this._outputJson = [];
+    }
+
+
+    get json() {
+        return this._json;
+    }
+
+    set json(json) {
+        switch (typeof json) {
+            case 'string':
+                this._json = this.strToJson(json);
+                break
+            default:
+                this._json = json;
+                break;
+        }
+        this.outputJson = json
+
+    }
+
+
+    addRow (entity) {
+        const updatedJson = this._json;
+        updatedJson.push(entity);
+        this.json = updatedJson;
+        return this;
+    }
+    removeRow() {
+        const updatedJson = this._json;
+        updatedJson.pop();
+        this.json = updatedJson;
+        return this;
+    }
+
+    get outputJson() {
+        return this._outputJson;
+    }
+
+    set outputJson(json) {
+        console.log('set outputJson')
+
+        this._outputJson = this.reduceByNameValue(json);
+        console.log(this._outputJson)
     }
 
     isJsonString(str) {
@@ -36,6 +81,47 @@ export default class JsonService {
         }
         return ReducedJson;
     }
+
+// Charger le JSON à l'affichage de la page et générer les entitys
+    loadJson() {
+        let entitiesArray = [];
+        let entityArray = [];
+        if (document.querySelector('#dyjsform_options') ){
+            const jsonString = document.querySelector('#dyjsform_options').value;
+            if (jsonString) {
+                try {
+                    const jsonString = document.querySelector('#dyjsform_options').value;
+                    console.log(jsonString);
+                    // if (jsonString) {
+                    //     try {
+                    //         const jsonData = JSON.parse(jsonString);
+                    //         var entityClone = null;
+                    //         jsonData.forEach((jsonValues) =>  {
+                    //             entityClone = JSON.parse(JSON.stringify(this._entity));
+                    //             entityClone.forEach(entity => {
+                    //                 for (let jsonName in jsonValues) {
+                    //                     if (entity.name === jsonName) {
+                    //                         entity.value = jsonValues[jsonName];
+                    //                     }
+                    //                 }
+                    //
+                    //             });
+                    //             entityArray.push(entityClone)
+                    //         });
+                    //     } catch (error) {
+                    //         console.error("Erreur lors de l'analyse du JSON : ", error);
+                    //     }
+                    // }
+                } catch (error) {
+                    console.error("Erreur lors de l'analyse du JSON : ", error);
+                }
+            }
+        }
+        return entityArray;
+
+    }
+
+
 
 
 }

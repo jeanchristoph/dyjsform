@@ -1,6 +1,10 @@
 import JsonService from './Service/JsonService.js';
 import TemplateService from './Service/TemplateService.js';
-
+//TODO Gérer les numéro de ligne pour les updates :
+//TODO ajout de numéro de ligne en data dans les inputs
+//TODO Ingnorer les boutons action dans le json
+//TODO faire l'update du JSon lors de la modif grace à numéro de ligne
+//TODO faire fonctionner la suppression grace a numéro de ligne
 export default class DyJsForm {
 
     /**
@@ -11,11 +15,7 @@ export default class DyJsForm {
         this._entity = [{'html_element': 'input', 'type': 'number', 'name': 'name_1', 'label': 'name_1', 'value': '', 'content' : '', 'class' : ''},
             {'html_element': 'input', 'type': 'text', 'label': 'name_1', 'name': 'name_2', 'value': '', 'content' : '', 'class' : ''},
             {'html_element': 'input', 'type': 'password', 'label': 'name_1', 'name': 'name_3', 'value': '', 'content' : '', 'class' : ''},
-        ];
-        this._json = [];
-        this._outputJson = [];
-        this._templateName = 'classic';
-        this._template = null;
+        ]; // exemple
         this.jsonService = new JsonService();
         this.templateService = new TemplateService();
     }
@@ -29,63 +29,39 @@ export default class DyJsForm {
         return this;
     }
 
-
     get template(){
-        return this._template;
+        return this.templateService.templateName;
     }
 
     set template(templateName){
-        this._templateName = templateName.charAt(0).toUpperCase()
-            + templateName.slice(1); // premiere lettre en maj pour correspondre à la classe
-
+        // premiere lettre en maj pour correspondre à la classe
+        this.templateService.templateName = templateName.charAt(0).toUpperCase()
+            + templateName.slice(1);
         return this;
     }
 
     init () {
         console.log('initializing Dyjsform');
-        this.loadTemplate().then(
+        this.templateService.loadTemplate().then(
             () => {
-                this.formRender();
+                const form = this.templateService.formRender(this.jsonService.json);
+                document.querySelector('#dyjsform').innerHTML = form;// Utiliser la méthode getForm()
                 this.initHandlers();
             }
         );
         return this;
     }
 
-    jsonRefresh(json){
-        switch (typeof json) {
-            case 'string':
-                this._json = this.jsonService.strToJson(json);
-                break
-            default:
-                this._json = json;
-                break;
-        }
-        this.updateOutputJson();
-        this.writeOutputJson()
-        return this;
-    }
-
-    async loadTemplate(){
-        const templateIndex = await import('./template'); // Assurez-vous d'importer la classe par défaut
-        // Assurez-vous d'importer la classe par défaut
-        this._template = new templateIndex[this._templateName]();
-    }
-
     refreshForm (){
         console.log('refreshing Dyjsform');
-        this.formRender();
-        this.rowRender();
-        this.initHandlers();
-        this.writeOutputJson();
-        console.log(this._json);
-        return this;
-    }
+        const form = this.templateService.formRender(this.jsonService.json);
+        document.querySelector('#dyjsform').innerHTML = form;// Utiliser la méthode getForm()
 
-    formRender () {
-        let json = this._json;
-        const template = this._template;
-        document.querySelector('#dyjsform').innerHTML = template.getForm(json);// Utiliser la méthode getForm()
+        const row = this.templateService.rowRender(this._entity, this.jsonService.json);
+        document.querySelector('#dyjsform_container').innerHTML = row; // Utiliser += pour ajouter le contenu
+
+        this.writeOutputJson()
+        this.initHandlers();
         return this;
     }
 
@@ -99,10 +75,7 @@ export default class DyJsForm {
             document.getElementById('djf_action_add').addEventListener('click', (event) => {
                 console.log('djf_action_add');
                 event.preventDefault();
-                let json = this._json;
-                json.push(this._entity);
-                this.jsonRefresh(json);
-                this.writeOutputJson();
+                this.jsonService.addRow(this._entity);
                 this.refreshForm();
 
             });
@@ -115,10 +88,7 @@ export default class DyJsForm {
             document.getElementById('djf_action_remove').addEventListener('click', (event) => {
                 console.log('djf_action_remove');
                 event.preventDefault();
-                let json = this._json;
-                json.pop();
-                this.jsonRefresh(json);
-                this.writeOutputJson();
+                this.jsonService.removeRow();
                 this.refreshForm();
             });
         }
@@ -145,81 +115,12 @@ export default class DyJsForm {
         return this;
     }
 
-    updateOutputJson () {
-        this._outputJson =  this.jsonService.reduceByNameValue(this._json);
-    }
-
     // Fonction pour générer le JSON
     writeOutputJson() {
-        document.querySelector('#dyjsform_options').value = JSON.stringify(this._outputJson, null);
+        console.log('writeOutputJson')
+        console.log(JSON.stringify(this.jsonService.outputJson, null))
+        document.querySelector('#dyjsform_options').value = JSON.stringify(this.jsonService.outputJson, null);
         return this;
-    }
-
-    // Fonction pour créer une entity dans le formulaire Bootstrap 5
-    rowRender() {
-        const template = this._template;
-        let begin = `<div class="row form-group align-items-center dyjsform_entity">`;
-        let end = `</div>`;
-        let rows = this._json;
-        let HtmlForm = begin;
-        for (let row of rows )
-        {
-            HtmlForm +=  this.fieldRender(row);
-        }
-        HtmlForm += end;
-        document.querySelector('#dyjsform_container').innerHTML += HtmlForm; // Utiliser += pour ajouter le contenu
-    }
-
-    // Fonction pour créer une entity dans le formulaire Bootstrap 5
-    fieldRender(json) {
-        const fieldNumber = this._entity.length;
-        const BSColumnWidth = (12 / fieldNumber).toFixed(0);
-        const template = this._template;
-        let Html = '';
-        for (let field of json) {
-            Html += template.getField(field, BSColumnWidth);
-        }
-        return Html;
-    }
-
-// Charger le JSON à l'affichage de la page et générer les entitys
-    loadJson() {
-        let entitiesArray = [];
-        let entityArray = [];
-        if (document.querySelector('#dyjsform_options') ){
-            const jsonString = document.querySelector('#dyjsform_options').value;
-            if (jsonString) {
-                try {
-                    const jsonString = document.querySelector('#dyjsform_options').value;
-                    console.log(jsonString);
-                    // if (jsonString) {
-                    //     try {
-                    //         const jsonData = JSON.parse(jsonString);
-                    //         var entityClone = null;
-                    //         jsonData.forEach((jsonValues) =>  {
-                    //             entityClone = JSON.parse(JSON.stringify(this._entity));
-                    //             entityClone.forEach(entity => {
-                    //                 for (let jsonName in jsonValues) {
-                    //                     if (entity.name === jsonName) {
-                    //                         entity.value = jsonValues[jsonName];
-                    //                     }
-                    //                 }
-                    //
-                    //             });
-                    //             entityArray.push(entityClone)
-                    //         });
-                    //     } catch (error) {
-                    //         console.error("Erreur lors de l'analyse du JSON : ", error);
-                    //     }
-                    // }
-                } catch (error) {
-                    console.error("Erreur lors de l'analyse du JSON : ", error);
-                }
-            }
-        }
-        this.jsonRefresh(JSON.stringify(entityArray, null));
-        return this;
-
     }
 
 }
