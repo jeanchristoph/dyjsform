@@ -16,8 +16,8 @@ export default class DyJsForm {
             {'html_element': 'input', 'type': 'text', 'label': 'name_1', 'name': 'name_2', 'value': '', 'content' : '', 'class' : ''},
             {'html_element': 'input', 'type': 'password', 'label': 'name_1', 'name': 'name_3', 'value': '', 'content' : '', 'class' : ''},
         ]; // exemple
-        this.jsonService = new JsonService();
-        this.templateService = new TemplateService();
+        this._jsonService = new JsonService();
+        this._templateService = new TemplateService();
     }
 
     get entity(){
@@ -30,21 +30,21 @@ export default class DyJsForm {
     }
 
     get template(){
-        return this.templateService.templateName;
+        return this._templateService.templateName;
     }
 
     set template(templateName){
         // premiere lettre en maj pour correspondre à la classe
-        this.templateService.templateName = templateName.charAt(0).toUpperCase()
+        this._templateService.templateName = templateName.charAt(0).toUpperCase()
             + templateName.slice(1);
         return this;
     }
 
     init () {
         console.log('initializing Dyjsform');
-        this.templateService.loadTemplate().then(
+        this._templateService.loadTemplate().then(
             () => {
-                const form = this.templateService.formRender(this.jsonService.json);
+                const form = this._templateService.formRender(this._jsonService.json);
                 document.querySelector('#dyjsform').innerHTML = form;// Utiliser la méthode getForm()
                 this.initHandlers();
             }
@@ -54,10 +54,10 @@ export default class DyJsForm {
 
     refreshForm (){
         console.log('refreshing Dyjsform');
-        const form = this.templateService.formRender(this.jsonService.json);
+        const form = this._templateService.formRender(this._jsonService.json);
         document.querySelector('#dyjsform').innerHTML = form;// Utiliser la méthode getForm()
 
-        const row = this.templateService.rowRender(this._entity, this.jsonService.json);
+        const row = this._templateService.rowRender(this._entity, this._jsonService.json);
         document.querySelector('#dyjsform_container').innerHTML = row; // Utiliser += pour ajouter le contenu
 
         this.writeOutputJson()
@@ -75,7 +75,7 @@ export default class DyJsForm {
             document.getElementById('djf_action_add').addEventListener('click', (event) => {
                 console.log('djf_action_add');
                 event.preventDefault();
-                this.jsonService.addRow(this._entity);
+                this._jsonService.addRow(this._entity);
                 this.refreshForm();
 
             });
@@ -88,7 +88,7 @@ export default class DyJsForm {
             document.getElementById('djf_action_remove').addEventListener('click', (event) => {
                 console.log('djf_action_remove');
                 event.preventDefault();
-                this.jsonService.removeRow();
+                this._jsonService.removeRow();
                 this.refreshForm();
             });
         }
@@ -118,8 +118,8 @@ export default class DyJsForm {
     // Fonction pour générer le JSON
     writeOutputJson() {
         console.log('writeOutputJson')
-        console.log(JSON.stringify(this.jsonService.outputJson, null))
-        document.querySelector('#dyjsform_options').value = JSON.stringify(this.jsonService.outputJson, null);
+        console.log(JSON.stringify(this._jsonService.outputJson, null))
+        document.querySelector('#dyjsform_options').value = JSON.stringify(this._jsonService.outputJson, null);
         return this;
     }
 
