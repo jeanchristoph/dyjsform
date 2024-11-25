@@ -1,6 +1,11 @@
-//TODO Ingnorer les boutons action dans le json
-//TODO faire l'update du JSon lors de la modif grace à numéro de ligne
-//TODO faire fonctionner la suppression grace a numéro de ligne
+//TODO: Initialisé avec des données en js
+//TODO: Faire remonté un Json depuis le dom si appel depuis le php
+//TODO: Rendre le formaulaire en mode simple sans bouton ajouter
+//TODO: ajouter un bouton submit
+//TODO: ajouter une action post ? AJAX ou PHP
+//TODO: ajouter des verifications
+//TODO: ajouter les bulles
+
 
 import JsonService from './Service/JsonService.js';
 import TemplateService from './Service/TemplateService.js';
@@ -25,6 +30,16 @@ export default class DyJsForm {
     get entity(){
         //clonage profond pour éviter le passage par référence dans le json créé ensuite et les pbs d'updates
         return JSON.parse(JSON.stringify(this._entity));
+    }
+
+    getEntityData(){
+        //clonage profond pour éviter le passage par référence dans le json créé ensuite et les pbs d'updates
+        return JSON.parse(
+            JSON.stringify(
+                // Créer un tableau filtré : pour enlever les boutons actions
+                this._entity.filter(item => !item.name.startsWith('djf_action_'))
+            )
+        );
     }
 
     set entity(array){
@@ -134,7 +149,7 @@ export default class DyJsForm {
         console.log('handleInputKeyup');
 
         // ecoute des inputs
-        for (const entity of this.entity){
+        for (const entity of this.getEntityData()){
             const elements = document.querySelectorAll('.' + entity.name);
             if (elements.length > 0) {
                 elements.forEach((element) => {
