@@ -6,7 +6,7 @@ export class Classic {
             <div  id="dyjsform_footer" class=" row form-group align-items-center">
                 <div class="col-md-3"></div>
                 <div class="col-md-6">
-                    <button type="button" id="djf_action_add" class="form-control btn btn-primary">
+                    <button type="button" class="form-control btn btn-primary djf_action_add">
                         <i class="fas fa-plus"></i> Ajouter
                     </button>
                 </div>
@@ -17,11 +17,12 @@ export class Classic {
             `;
     }
 
-    getField(field, BSColumnWidth ) {
+    getField(field,rowIndex, BSColumnWidth ) {
         return `<div class="form-group col-md-${BSColumnWidth}">
             <div class="col-md-12">${field.label === '' ? '&nbsp;' : field.label}</div>
             <div class="col-md-12">
-                <${field.html_element} class="form-control ${field.name} ${field.class}" type="${field.type}" value="${field.value}">${field.content}</${field.html_element}>
+                <${field.html_element} class="form-control ${field.name} ${field.class}" type="${field.type}" 
+                value="${field.value}" data-row="${rowIndex}" data-name="${field.name}">${field.content}</${field.html_element}>
             </div>
         </div>`;
     }
