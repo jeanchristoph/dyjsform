@@ -1,10 +1,11 @@
-import JsonService from './Service/JsonService.js';
-import TemplateService from './Service/TemplateService.js';
-//TODO Gérer les numéro de ligne pour les updates :
-//TODO ajout de numéro de ligne en data dans les inputs
+//TODO Bug : le contenu d"un input est copié lors de la création d'une nouvelle ligne
 //TODO Ingnorer les boutons action dans le json
 //TODO faire l'update du JSon lors de la modif grace à numéro de ligne
 //TODO faire fonctionner la suppression grace a numéro de ligne
+
+import JsonService from './Service/JsonService.js';
+import TemplateService from './Service/TemplateService.js';
+
 export default class DyJsForm {
 
     /**
@@ -18,6 +19,7 @@ export default class DyJsForm {
         ]; // exemple
         this._jsonService = new JsonService();
         this._templateService = new TemplateService();
+        this._onDataEditTimeOut = null;
     }
 
     get entity(){
@@ -25,6 +27,8 @@ export default class DyJsForm {
     }
 
     set entity(array){
+        console.log('set entity');
+        console.log(array);
         this._entity = array;
         return this;
     }
@@ -59,7 +63,6 @@ export default class DyJsForm {
 
         const row = this._templateService.rowRender(this._entity, this._jsonService.json);
         document.querySelector('#dyjsform_container').innerHTML = row; // Utiliser += pour ajouter le contenu
-
         this.writeOutputJson()
         this.initHandlers();
         return this;
@@ -71,29 +74,60 @@ export default class DyJsForm {
     }
     initEventListeners () {
         // Ajouter une nouvelle ligne
-        if (document.getElementById('djf_action_add')) {
-            document.getElementById('djf_action_add').addEventListener('click', (event) => {
-                console.log('djf_action_add');
-                event.preventDefault();
-                this._jsonService.addRow(this._entity);
-                this.refreshForm();
-
-            });
-        }
-
+        this.addHandler()
         // Supprimer une ligne
         // document.addEventListener('click', (event) => {
-        if (document.getElementById('djf_action_remove')){
-            console.log('document.getElementById(djf_action_remove)');
-            document.getElementById('djf_action_remove').addEventListener('click', (event) => {
-                console.log('djf_action_remove');
-                event.preventDefault();
-                this._jsonService.removeRow();
-                this.refreshForm();
-            });
-        }
+        console.log('djf_action_remove handler')
+        this.deleteHandler()
 
         return this;
+    }
+
+    addHandler() {
+        document.querySelectorAll('.djf_action_add').forEach((element) => {
+            element.addEventListener('click', (event) => {
+                console.log('djf_action_add');
+                event.preventDefault();
+                console.log('before addRow')
+                console.log(this._entity)
+                this._jsonService.addRow(this._entity);
+                this.refreshForm();
+            });
+        });
+    }
+
+    deleteHandler(){
+        console.log('delete handler')
+        document.querySelectorAll('.djf_action_remove').forEach((element) => {
+            element.addEventListener('click', (event) => {
+                // Récupérer l'attribut data-row de l'élément cible
+                const rowNumber = event.target.getAttribute('data-row');
+                console.log('rowNumber:', rowNumber);
+
+                console.log('djf_action_remove');
+                event.preventDefault(); // Empêche le comportement par défaut du clic
+
+                // Appel des méthodes de service
+                this._jsonService.removeRow(rowNumber);
+                this.refreshForm();
+            });
+        });
+
+    }
+
+    onDataEdit (element){
+        console.log('onDataEdit')
+        if (this._onDataEditTimeOut){
+            clearTimeout(this._onDataEditTimeOut);
+            console.log('clearTimeout')
+        }
+        this._onDataEditTimeOut = setTimeout(() => {
+            let rowNumber = element.getAttribute('data-row');
+            let fieldName = element.getAttribute('data-name');
+            let value = element.value;
+            this._jsonService.updateJsonByField(rowNumber,fieldName, value);
+            this.writeOutputJson()
+        },1000)
     }
 
 
@@ -104,10 +138,10 @@ export default class DyJsForm {
             if (elements.length > 0) {
                 elements.forEach((element) => {
                     element.addEventListener('keyup', async () => {
-                        await this.refreshForm();
+                        this.onDataEdit(element)
                     });
                     element.addEventListener('change', async () => {
-                        await this.refreshForm();
+                        this.onDataEdit(element);
                     });
                 });
             }
@@ -115,7 +149,7 @@ export default class DyJsForm {
         return this;
     }
 
-    // Fonction pour générer le JSON
+// Fonction pour générer le JSON
     writeOutputJson() {
         console.log('writeOutputJson')
         console.log(JSON.stringify(this._jsonService.outputJson, null))
