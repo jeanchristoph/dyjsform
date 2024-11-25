@@ -10,6 +10,19 @@ export default class JsonService {
         return JSON.parse(JSON.stringify(this._json));
     }
 
+
+    getJsonData(){
+        //clonage profond pour éviter le passage par référence dans le json créé ensuite et les pbs d'updates
+        return JSON.parse(
+            JSON.stringify(
+                // Créer un tableau filtré : pour enlever les boutons actions à l'interieur du tableau parent
+                this._json.map(row =>
+                    row.filter(field => !field.name.startsWith('djf_action_'))
+                )
+            )
+        );
+    }
+
     set json(json) {
         switch (typeof json) {
             case 'string':
@@ -19,7 +32,7 @@ export default class JsonService {
                 this._json = json;
                 break;
         }
-        this.outputJson = json
+        this.outputJson = this.getJsonData();
 
     }
 
