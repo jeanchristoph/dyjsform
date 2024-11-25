@@ -24,14 +24,17 @@ export default class JsonService {
 
 
     addRow (entity) {
+        console.log('addRow');
+        console.log(entity);
         const updatedJson = this._json;
         updatedJson.push(entity);
         this.json = updatedJson;
         return this;
     }
-    removeRow() {
+    removeRow(rowNumber) {
         const updatedJson = this._json;
-        updatedJson.pop();
+        // updatedJson.pop();
+        updatedJson.splice(rowNumber, 1);
         this.json = updatedJson;
         return this;
     }
@@ -42,9 +45,7 @@ export default class JsonService {
 
     set outputJson(json) {
         console.log('set outputJson')
-
         this._outputJson = this.reduceByNameValue(json);
-        console.log(this._outputJson)
     }
 
     isJsonString(str) {
@@ -122,6 +123,15 @@ export default class JsonService {
     }
 
 
-
+    updateJsonByField(rowNumber,fieldName, value) {
+        console.log('updateJsonByField');
+        let json = this._json;
+        json[rowNumber].forEach((element, index)=> {
+            if (element.name === fieldName){
+                element.value = value;
+            }
+        })
+        this.json = json
+    }
 
 }

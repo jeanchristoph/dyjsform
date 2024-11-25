@@ -44,10 +44,10 @@ export default class TemplateService {
         let HtmlForm = containerContent;
 
         HtmlForm += begin;
-        for (let row of rows )
-        {
-            HtmlForm +=  this.fieldRender(entity, row);
-        }
+        // for (let row of rows ) {
+        rows.forEach((row, rowIndex) => {
+            HtmlForm +=  this.fieldRender(entity, row, rowIndex);
+        });
         HtmlForm += end;
 
         return HtmlForm;
@@ -55,13 +55,13 @@ export default class TemplateService {
     }
 
     // Fonction pour créer une entity dans le formulaire Bootstrap 5
-    fieldRender(entity, json) {
+    fieldRender(entity, row, rowIndex) {
         const fieldNumber = entity.length;
         const BSColumnWidth = (12 / fieldNumber).toFixed(0);
         const template = this._template;
         let Html = '';
-        for (let field of json) {
-            Html += template.getField(field, BSColumnWidth);
+        for (let field of row) {
+            Html += template.getField(field,rowIndex, BSColumnWidth );
         }
         return Html;
     }
