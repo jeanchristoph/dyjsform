@@ -29,9 +29,8 @@ export default class TemplateService {
     }
 
     formRender () {
-        let json = this._json;
         const template = this._template;
-        return template.getForm(json);
+        return template.getForm();
     }
 
     // Fonction pour créer une entity dans le formulaire Bootstrap 5
