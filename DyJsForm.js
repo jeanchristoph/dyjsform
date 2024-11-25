@@ -1,4 +1,3 @@
-//TODO Bug : le contenu d"un input est copié lors de la création d'une nouvelle ligne
 //TODO Ingnorer les boutons action dans le json
 //TODO faire l'update du JSon lors de la modif grace à numéro de ligne
 //TODO faire fonctionner la suppression grace a numéro de ligne
@@ -20,15 +19,15 @@ export default class DyJsForm {
         this._jsonService = new JsonService();
         this._templateService = new TemplateService();
         this._onDataEditTimeOut = null;
+
     }
 
     get entity(){
-        return this._entity;
+        //clonage profond pour éviter le passage par référence dans le json créé ensuite et les pbs d'updates
+        return JSON.parse(JSON.stringify(this._entity));
     }
 
     set entity(array){
-        console.log('set entity');
-        console.log(array);
         this._entity = array;
         return this;
     }
@@ -48,7 +47,7 @@ export default class DyJsForm {
         console.log('initializing Dyjsform');
         this._templateService.loadTemplate().then(
             () => {
-                const form = this._templateService.formRender(this._jsonService.json);
+                const form = this._templateService.formRender();
                 document.querySelector('#dyjsform').innerHTML = form;// Utiliser la méthode getForm()
                 this.initHandlers();
             }
@@ -58,17 +57,18 @@ export default class DyJsForm {
 
     refreshForm (){
         console.log('refreshing Dyjsform');
-        const form = this._templateService.formRender(this._jsonService.json);
+        const form = this._templateService.formRender();
         document.querySelector('#dyjsform').innerHTML = form;// Utiliser la méthode getForm()
 
-        const row = this._templateService.rowRender(this._entity, this._jsonService.json);
+        const row = this._templateService.rowRender(this.entity, this._jsonService.json);
         document.querySelector('#dyjsform_container').innerHTML = row; // Utiliser += pour ajouter le contenu
-        this.writeOutputJson()
+        this.writeOutputJson();
         this.initHandlers();
         return this;
     }
 
     initHandlers (){
+
         this.initEventListeners();
         this.handleInputKeyup();
     }
@@ -89,8 +89,7 @@ export default class DyJsForm {
                 console.log('djf_action_add');
                 event.preventDefault();
                 console.log('before addRow')
-                console.log(this._entity)
-                this._jsonService.addRow(this._entity);
+                this._jsonService.addRow(this.entity);
                 this.refreshForm();
             });
         });
@@ -116,10 +115,10 @@ export default class DyJsForm {
     }
 
     onDataEdit (element){
+
         console.log('onDataEdit')
         if (this._onDataEditTimeOut){
             clearTimeout(this._onDataEditTimeOut);
-            console.log('clearTimeout')
         }
         this._onDataEditTimeOut = setTimeout(() => {
             let rowNumber = element.getAttribute('data-row');
@@ -132,16 +131,18 @@ export default class DyJsForm {
 
 
     async handleInputKeyup () {
+        console.log('handleInputKeyup');
+
         // ecoute des inputs
-        for (const entity of this._entity){
+        for (const entity of this.entity){
             const elements = document.querySelectorAll('.' + entity.name);
             if (elements.length > 0) {
                 elements.forEach((element) => {
-                    element.addEventListener('keyup', async () => {
-                        this.onDataEdit(element)
+                    element.addEventListener('keyup',  (event) => {
+                        this.onDataEdit(event.target)
                     });
-                    element.addEventListener('change', async () => {
-                        this.onDataEdit(element);
+                    element.addEventListener('change',  (event) => {
+                        this.onDataEdit(event.target);
                     });
                 });
             }
@@ -152,7 +153,6 @@ export default class DyJsForm {
 // Fonction pour générer le JSON
     writeOutputJson() {
         console.log('writeOutputJson')
-        console.log(JSON.stringify(this._jsonService.outputJson, null))
         document.querySelector('#dyjsform_options').value = JSON.stringify(this._jsonService.outputJson, null);
         return this;
     }
