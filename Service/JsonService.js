@@ -6,7 +6,8 @@ export default class JsonService {
 
 
     get json() {
-        return this._json;
+        //clonage profond pour éviter le passage par référence dans le json créé ensuite et les pbs d'updates
+        return JSON.parse(JSON.stringify(this._json));
     }
 
     set json(json) {
@@ -24,15 +25,13 @@ export default class JsonService {
 
 
     addRow (entity) {
-        console.log('addRow');
-        console.log(entity);
-        const updatedJson = this._json;
+        const updatedJson = this.json;
         updatedJson.push(entity);
         this.json = updatedJson;
         return this;
     }
     removeRow(rowNumber) {
-        const updatedJson = this._json;
+        const updatedJson = this.json;
         // updatedJson.pop();
         updatedJson.splice(rowNumber, 1);
         this.json = updatedJson;
@@ -125,7 +124,7 @@ export default class JsonService {
 
     updateJsonByField(rowNumber,fieldName, value) {
         console.log('updateJsonByField');
-        let json = this._json;
+        let json = this.json;
         json[rowNumber].forEach((element, index)=> {
             if (element.name === fieldName){
                 element.value = value;
