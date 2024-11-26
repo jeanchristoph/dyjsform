@@ -17,7 +17,7 @@ export default class JsonService {
             JSON.stringify(
                 // Créer un tableau filtré : pour enlever les boutons actions à l'interieur du tableau parent
                 this._json.map(row =>
-                    row.filter(field => !field.name.startsWith('djf_action_'))
+                    row.filter(field => !field.name.startsWith('dyjsform_action_'))
                 )
             )
         );
