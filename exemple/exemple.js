@@ -42,7 +42,6 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         {
             'html_element': 'input',
-            'type': 'password',
             'name': 'name_password',
             'label': 'password',
             'value': '',
@@ -52,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             'html_element': 'button',
             'type': 'button',
-            'name': 'djf_action_remove',
+            'name': 'dyjsform_action_remove',
             'label': '',
             'value': '',
             'content': 'Supprimer',
