@@ -6,7 +6,7 @@ export class Test {
             <div  id="dyjsform_footer" class=" row form-group align-items-center">
                 <div class="col-md-3"></div>
                 <div class="col-md-6">
-                    <button type="button" id="djf_action_add" class="form-control btn btn-primary">
+                    <button type="button" id="dyjsform_action_add" class="form-control btn btn-primary">
                         <i class="fas fa-plus"></i> TEST
                     </button>
                 </div>
@@ -29,7 +29,7 @@ export class Test {
         return `<div class="form-group col-md-${BSColumnWidth}">
         <div class="col-md-12">&nbsp;</div>
         <div class="col-md-12">
-            <button type="button" class="djf_action_remove btn btn-danger form-control">Supprimer</button>
+            <button type="button" class="dyjsform_action_remove btn btn-danger form-control">Supprimer</button>
         </div>
     </div>`;
     }
