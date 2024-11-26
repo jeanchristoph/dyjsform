@@ -1,4 +1,4 @@
-//TODO: supprimé name et ajouter data-name
+
 //TODO: supprimé pur et simplement le name pour les boutons action ne laisser que le data-name dyjsform_action_xxx
 //TODO: Les name devrait être sous la forme dyjsform[{data-name}], si 1+ row : dyjsform[{data-name}_{numérod de row}]
 //TODO: Initialisé avec des données en js
@@ -43,7 +43,7 @@ export default class DyJsForm {
         return JSON.parse(
             JSON.stringify(
                 // Créer un tableau filtré : pour enlever les boutons actions
-                this._entity.filter(item => !item.name.startsWith('djf_action_'))
+                this._entity.filter(item => !item.name.startsWith('dyjsform_action_'))
             )
         );
     }
@@ -98,16 +98,16 @@ export default class DyJsForm {
         this.addHandler()
         // Supprimer une ligne
         // document.addEventListener('click', (event) => {
-        console.log('djf_action_remove handler')
+        console.log('dyjsform_action_remove handler')
         this.deleteHandler()
 
         return this;
     }
 
     addHandler() {
-        document.querySelectorAll('.djf_action_add').forEach((element) => {
+        document.querySelectorAll('.dyjsform_action_add').forEach((element) => {
             element.addEventListener('click', (event) => {
-                console.log('djf_action_add');
+                console.log('dyjsform_action_add');
                 event.preventDefault();
                 console.log('before addRow')
                 this._jsonService.addRow(this.entity);
@@ -118,13 +118,13 @@ export default class DyJsForm {
 
     deleteHandler(){
         console.log('delete handler')
-        document.querySelectorAll('.djf_action_remove').forEach((element) => {
+        document.querySelectorAll('.dyjsform_action_remove').forEach((element) => {
             element.addEventListener('click', (event) => {
                 // Récupérer l'attribut data-row de l'élément cible
                 const rowNumber = event.target.getAttribute('data-row');
                 console.log('rowNumber:', rowNumber);
 
-                console.log('djf_action_remove');
+                console.log('dyjsform_action_remove');
                 event.preventDefault(); // Empêche le comportement par défaut du clic
 
                 // Appel des méthodes de service
