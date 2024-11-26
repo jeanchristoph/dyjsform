@@ -1,10 +1,16 @@
+//TODO: supprimé name et ajouter data-name
+//TODO: supprimé pur et simplement le name pour les boutons action ne laisser que le data-name dyjsform_action_xxx
+//TODO: Les name devrait être sous la forme dyjsform[{data-name}], si 1+ row : dyjsform[{data-name}_{numérod de row}]
 //TODO: Initialisé avec des données en js
 //TODO: Faire remonté un Json depuis le dom si appel depuis le php
 //TODO: Rendre le formaulaire en mode simple sans bouton ajouter
 //TODO: ajouter un bouton submit
-//TODO: ajouter une action post ? AJAX ou PHP
-//TODO: ajouter des verifications
-//TODO: ajouter les bulles
+//TODO: ajouter une action post AJAX ou PHP
+//TODO: ajouter une action post classique ?
+//TODO: Eviter Bootstrap et passer en flex ?
+
+//TO DO: ajouter des verifications -> Sort du périmetre
+//TO DO: ajouter les bulles -> Sort du périmetre
 
 
 import JsonService from './Service/JsonService.js';
