@@ -56,7 +56,6 @@ export default class JsonService {
     }
 
     set outputJson(json) {
-        console.log('set outputJson')
         this._outputJson = this.reduceByNameValue(json);
     }
 
@@ -64,7 +63,7 @@ export default class JsonService {
         try {
             JSON.parse(str);
         } catch (e) {
-            console.log(e)
+            console.error(e)
             return false;
         }
         return true;
@@ -104,7 +103,7 @@ export default class JsonService {
             if (jsonString) {
                 try {
                     const jsonString = document.querySelector('#dyjsform_options').value;
-                    console.log(jsonString);
+
                     // if (jsonString) {
                     //     try {
                     //         const jsonData = JSON.parse(jsonString);
@@ -136,7 +135,6 @@ export default class JsonService {
 
 
     updateJsonByField(rowNumber,fieldName, value) {
-        console.log('updateJsonByField');
         let json = this.json;
         json[rowNumber].forEach((element, index)=> {
             if (element.name === fieldName){
