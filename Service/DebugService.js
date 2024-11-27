@@ -37,7 +37,7 @@ export default class DebugService {
             }
         });
 
-        // Lier toutes les méthodes au Proxy
+        // Lier toutes les méthodes au Proxy : ex. this.method
         for (const key of Object.getOwnPropertyNames(Object.getPrototypeOf(instance) || {})) {
             if (typeof instance[key] === 'function' && key !== 'constructor') {
                 instance[key] = instance[key].bind(proxy);
