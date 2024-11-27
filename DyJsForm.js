@@ -23,7 +23,7 @@ export default class DyJsForm {
      *
      * Exemple:  [{'html_element':'input','type': 'number', 'name': 'name_1','label': 'name_1', 'value':''},]
      */
-    constructor(debug = 0) {
+    constructor({debug = 0}) {
 
 
         this._entity = [{'html_element': 'input', 'type': 'number', 'name': 'name_1', 'label': 'name_1', 'value': '', 'content' : '', 'class' : ''},
@@ -33,7 +33,6 @@ export default class DyJsForm {
         this._jsonService = new JsonService();
         this._templateService = new TemplateService();
         this._onDataEditTimeOut = null;
-
 
         if (debug === 1) {
             return new DebugService(this); // Retourner une instance proxy de débogage
