@@ -17,7 +17,7 @@ export default class DebugService {
                         if (['symbol'].includes(propKey) ) {
                             // Ne pas loguer les symbol
                             // console.log(`[${formattedTime}] ${target.constructor.name} -> ${String(propKey)}() `);
-                        } else if  (['symbol'].includes(propKey) || ['Array','Date'].includes(constructorName) ) {
+                        } else if  (['Array','Date'].includes(constructorName) ) {
                             // Ne pas loguer les Date & Array
                         }
                         else {
