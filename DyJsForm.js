@@ -15,6 +15,7 @@
 
 import JsonService from './Service/JsonService.js';
 import TemplateService from './Service/TemplateService.js';
+import DebugService from './Service/DebugService.js';
 
 export default class DyJsForm {
 
@@ -22,7 +23,9 @@ export default class DyJsForm {
      *
      * Exemple:  [{'html_element':'input','type': 'number', 'name': 'name_1','label': 'name_1', 'value':''},]
      */
-    constructor() {
+    constructor(debug = 0) {
+
+
         this._entity = [{'html_element': 'input', 'type': 'number', 'name': 'name_1', 'label': 'name_1', 'value': '', 'content' : '', 'class' : ''},
             {'html_element': 'input', 'type': 'text', 'label': 'name_1', 'name': 'name_2', 'value': '', 'content' : '', 'class' : ''},
             {'html_element': 'input', 'type': 'password', 'label': 'name_1', 'name': 'name_3', 'value': '', 'content' : '', 'class' : ''},
@@ -31,6 +34,11 @@ export default class DyJsForm {
         this._templateService = new TemplateService();
         this._onDataEditTimeOut = null;
 
+
+        if (debug === 1) {
+            return new DebugService(this); // Retourner une instance proxy de débogage
+        }
+        return this;
     }
 
     get entity(){
@@ -65,7 +73,6 @@ export default class DyJsForm {
     }
 
     init () {
-        console.log('initializing Dyjsform');
         this._templateService.loadTemplate().then(
             () => {
                 const form = this._templateService.formRender();
@@ -77,7 +84,6 @@ export default class DyJsForm {
     }
 
     refreshForm (){
-        console.log('refreshing Dyjsform');
         const form = this._templateService.formRender();
         document.querySelector('#dyjsform').innerHTML = form;// Utiliser la méthode getForm()
 
@@ -98,7 +104,6 @@ export default class DyJsForm {
         this.addHandler()
         // Supprimer une ligne
         // document.addEventListener('click', (event) => {
-        console.log('dyjsform_action_remove handler')
         this.deleteHandler()
 
         return this;
@@ -107,9 +112,7 @@ export default class DyJsForm {
     addHandler() {
         document.querySelectorAll('.dyjsform_action_add').forEach((element) => {
             element.addEventListener('click', (event) => {
-                console.log('dyjsform_action_add');
                 event.preventDefault();
-                console.log('before addRow')
                 this._jsonService.addRow(this.entity);
                 this.refreshForm();
             });
@@ -117,14 +120,10 @@ export default class DyJsForm {
     }
 
     deleteHandler(){
-        console.log('delete handler')
         document.querySelectorAll('.dyjsform_action_remove').forEach((element) => {
             element.addEventListener('click', (event) => {
                 // Récupérer l'attribut data-row de l'élément cible
                 const rowNumber = event.target.getAttribute('data-row');
-                console.log('rowNumber:', rowNumber);
-
-                console.log('dyjsform_action_remove');
                 event.preventDefault(); // Empêche le comportement par défaut du clic
 
                 // Appel des méthodes de service
@@ -136,8 +135,6 @@ export default class DyJsForm {
     }
 
     onDataEdit (element){
-
-        console.log('onDataEdit')
         if (this._onDataEditTimeOut){
             clearTimeout(this._onDataEditTimeOut);
         }
@@ -152,8 +149,6 @@ export default class DyJsForm {
 
 
     async handleInputKeyup () {
-        console.log('handleInputKeyup');
-
         // ecoute des inputs
         for (const entity of this.getEntityData()){
             const elements = document.querySelectorAll('.' + entity.name);
@@ -173,7 +168,6 @@ export default class DyJsForm {
 
 // Fonction pour générer le JSON
     writeOutputJson() {
-        console.log('writeOutputJson')
         document.querySelector('#dyjsform_options').value = JSON.stringify(this._jsonService.outputJson, null);
         return this;
     }

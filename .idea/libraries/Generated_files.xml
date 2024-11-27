@@ -5,6 +5,7 @@
         <item url="file://$PROJECT_DIR$/DyJsForm.min.js" />
         <item url="file://$PROJECT_DIR$/Service/JsonService.min.js" />
         <item url="file://$PROJECT_DIR$/Service/TemplateService.min.js" />
+        <item url="file://$PROJECT_DIR$/Service/debugService.min.js" />
         <item url="file://$PROJECT_DIR$/Template/classic.min.js" />
         <item url="file://$PROJECT_DIR$/Template/index.min.js" />
         <item url="file://$PROJECT_DIR$/Template/test.min.js" />
@@ -21,6 +22,7 @@
       <root url="file://$PROJECT_DIR$/Template/test.min.js" />
       <root url="file://$PROJECT_DIR$/exemple/exemple.min.js" />
       <root url="file://$PROJECT_DIR$/formEvents.min.js" />
+      <root url="file://$PROJECT_DIR$/Service/DebugService.min.js" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
