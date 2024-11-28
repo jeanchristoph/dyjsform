@@ -1,6 +1,4 @@
 
-//TODO: supprimé pur et simplement le name pour les boutons action ne laisser que le data-name dyjsform_action_xxx
-//TODO: Les name devrait être sous la forme dyjsform[{data-name}], si 1+ row : dyjsform[{data-name}_{numérod de row}]
 //TODO: Initialisé avec des données en js
 //TODO: Faire remonté un Json depuis le dom si appel depuis le php
 //TODO: Rendre le formaulaire en mode simple sans bouton ajouter
@@ -21,7 +19,15 @@ export default class DyJsForm {
 
     /**
      *
-     * Exemple:  [{'html_element':'input','type': 'number', 'name': 'name_1','label': 'name_1', 'value':''},]
+     * Exemple:  [{
+     *             'html_element': 'input',
+     *             'type': 'date',
+     *             'name': 'name_date',
+     *             'label': 'date',
+     *             'value': '',
+     *             'content': '',
+     *             'class': ''
+     *         },]
      */
     constructor({debug = 0}) {
 
@@ -59,6 +65,7 @@ export default class DyJsForm {
         this._entity = array;
         return this;
     }
+
 
     get template(){
         return this._templateService.templateName;
