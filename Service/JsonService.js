@@ -94,6 +94,34 @@ export default class JsonService {
         return ReducedJson;
     }
 
+    populateJson(json) {
+        // Vérifiez si json a plus de lignes que this._json
+        while (this._json.length < json.length) {
+            // Ajoutez une copie de la dernière ligne de this._json avec les valeurs vides
+            const templateRow = this._json[this._json.length - 1].map(field => ({
+                ...field,
+                value: ''
+            }));
+            this._json.push(templateRow);
+        }
+
+        // Mettez à jour les valeurs à partir de json
+        this._json = this._json.map((row, rowIndex) => {
+            if (json[rowIndex]) {
+                return row.map(field => {
+                    const correspondingField = json[rowIndex].find(f => f.name === field.name);
+                    return correspondingField
+                        ? { ...field, value: correspondingField.value }
+                        : field;
+                });
+            }
+            return row;
+        });
+    }
+
+
+
+
 // Charger le JSON à l'affichage de la page et générer les entitys
     loadJson() {
         let entitiesArray = [];
