@@ -21,7 +21,7 @@ export class Classic {
         let value = field.type ? `value="${field.value}"` : '';
         let content = field.content ? `${field.content}` : '';
         let className = field.class ? `${field.class}` : '';
-        let name = !field.name.startsWith('dyjsform_action_') ? `dyjsform[${field.name}_${rowIndex}]` :  '';
+        let name = !field.name.startsWith('dyjsform_action_') ? `name="dyjsform[${field.name}_${rowIndex}]"` :  '';
 
         return `<div class="form-group col-md-${BSColumnWidth}">
             <div class="col-md-12">${field.label === '' ? '&nbsp;' : field.label}</div>
