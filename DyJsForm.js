@@ -51,14 +51,17 @@ export default class DyJsForm {
     }
 
     getEntityData(){
+        console.log('getEntityData');
         console.log(this._entity);
         //clonage profond pour éviter le passage par référence dans le json créé ensuite et les pbs d'updates
         return JSON.parse(
+
             JSON.stringify(
                 // Créer un tableau filtré : pour enlever les boutons actions
                 this._entity.filter(item => !item.name.startsWith('dyjsform_action_'))
             )
         );
+        console.log('apres parse');
     }
 
     // set entity(array){
