@@ -2,29 +2,34 @@ import DyJsForm from '../DyJsForm.js';
 
 // MODULE ADHESION
 document.addEventListener('DOMContentLoaded', function() {
-    let dyjsform = new DyJsForm('#dyjsform',{debug : true});
+    let dyjsform = new DyJsForm('#dyjsform',{debug : false});
     dyjsform.template ='classic' ;
     dyjsform.entity = [
         {
-            'html_element': 'input',
-            'type': 'date',
-            'name': 'name_date',
-            'label': 'date',
+            'htmlElement': 'select',
+            'type': '',
+            'name': 'type_adhesion',
+            'label': 'Type adhésion',
             'value': '',
             'content': '',
-            'class': ''
+            'className': '',
+            'options': [
+                {'name':'bac', 'value' : 'bac'},
+                {'name':'newsletter', 'value' : 'newsletter','max_count': 1},
+                {'name':'condition generales', 'value' : 'conditions_generales','max_count': 1},
+            ]
         },
         {
-            'html_element': 'input',
+            'htmlElement': 'input',
             'type': 'text',
             'name': 'name_text',
             'label': 'text',
             'value': '',
             'content': '',
-            'class': ''
+            'className': ''
         },
         {
-            'html_element': 'input',
+            'htmlElement': 'input',
             'type': 'number',
             'name': 'name_number',
             'label': 'nombre',
@@ -32,30 +37,30 @@ document.addEventListener('DOMContentLoaded', function() {
             'content': ''
         },
         {
-            'html_element': 'input',
+            'htmlElement': 'input',
             'type': 'email',
             'name': 'name_email',
             'label': 'email',
             'value': '',
             'content': '',
-            'class': ''
+            'className': ''
         },
         {
-            'html_element': 'input',
+            'htmlElement': 'input',
             'name': 'name_password',
             'label': 'password',
             'value': '',
             'content': '',
-            'class': ''
+            'className': ''
         },
         {
-            'html_element': 'button',
+            'htmlElement': 'button',
             'type': 'button',
             'name': 'dyjsform_action_remove',
             'label': '',
             'value': '',
             'content': 'Supprimer',
-            'class': 'btn btn-danger'
+            'className': 'btn btn-danger'
         },
     ];
     dyjsform.init();
