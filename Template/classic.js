@@ -17,11 +17,22 @@ export class Classic {
     }
 
     getField(field,rowIndex, BSColumnWidth) {
-        let type = field.type ? `type="${field.type}"` : '';
-        let value = field.type ? `value="${field.value}"` : '';
-        let content = field.content ? `${field.content}` : '';
-        let className = field.className ? `${field.className}` : '';
-        let name = !field.name.startsWith('dyjsform_action_') ? `name="dyjsform[${field.name}_${rowIndex}]"` :  '';
+        const type = field.type ? `type="${field.type}"` : '';
+        const value = field.value ? `value="${field.value}"` : '';
+        let content = '';
+        const className = field.className ? `${field.className}` : '';
+        const name = !field.name.startsWith('dyjsform_action_') ? `name="dyjsform[${field.name}_${rowIndex}]"` :  '';
+
+        if (field.htmlElement === 'select' && field.options){
+            content += `<option></option>`;
+            field.options.forEach(option => {
+                let maxCount= option.maxCount ? `data-maxCount=${option.maxCount}` : '';
+                let selected= field.value === option.value ? 'selected' : '';
+                content += `<option ${selected} value="${option.value}" ${maxCount}>${option.name}</option>`;
+            })
+        } else {
+            content = field.content ? `${field.content}` : '';
+        }
 
         return `<div class="form-group col-md-${BSColumnWidth}">
             <div class="col-md-12">${field.label === '' ? '&nbsp;' : field.label}</div>

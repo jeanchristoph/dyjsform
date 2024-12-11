@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'label': '',
             'value': '',
             'content': 'Supprimer',
-            'className': 'btn btn-danger'
+            'className': 'btn btn-warning'
         },
     ];
     dyjsform.init();
