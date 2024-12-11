@@ -1,6 +1,6 @@
 export default class TemplateService {
     constructor() {
-        this._templateName = 'classic';
+        this._templateName = 'Classic';
         this._template = null;
     }
 
@@ -9,6 +9,9 @@ export default class TemplateService {
     }
 
     set templateName(value) {
+
+        value = value.charAt(0).toUpperCase() + value.slice(1);
+        console.log(value);
         this._templateName = value;
     }
 
@@ -23,6 +26,7 @@ export default class TemplateService {
     async loadTemplate(){
         const templateIndex = await import('../Template'); // Assurez-vous d'importer la classe par défaut
         // Assurez-vous d'importer la classe par défaut
+
         let template = new templateIndex[this._templateName]();
         this._template = template
         return template;
