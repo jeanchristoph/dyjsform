@@ -20,14 +20,14 @@ export class Classic {
         let type = field.type ? `type="${field.type}"` : '';
         let value = field.type ? `value="${field.value}"` : '';
         let content = field.content ? `${field.content}` : '';
-        let className = field.class ? `${field.class}` : '';
+        let className = field.className ? `${field.className}` : '';
         let name = !field.name.startsWith('dyjsform_action_') ? `name="dyjsform[${field.name}_${rowIndex}]"` :  '';
 
         return `<div class="form-group col-md-${BSColumnWidth}">
             <div class="col-md-12">${field.label === '' ? '&nbsp;' : field.label}</div>
             <div class="col-md-12">
-                <${field.html_element} ${name} class="form-control ${field.name} ${className}" ${type} ${value} 
-                data-row="${rowIndex}" data-name="${field.name}">${content}</${field.html_element}>
+                <${field.htmlElement} ${name} class="form-control ${field.name} ${className}" ${type} ${value} 
+                data-row="${rowIndex}" data-name="${field.name}">${content}</${field.htmlElement}>
             </div>
         </div>`;
     }

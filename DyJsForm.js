@@ -15,45 +15,43 @@
 import JsonService from './Service/JsonService.js';
 import TemplateService from './Service/TemplateService.js';
 import DebugService from './Service/DebugService.js';
+import EntityDTO from './DTO/EntityDTO.js';
+import OptionDTO from './DTO/OptionDTO.js';
 
 export default class DyJsForm {
 
     /**
-     *
-     * Exemple:  [{
-     *             'html_element': 'input',
-     *             'type': 'date',
-     *             'name': 'name_date',
-     *             'label': 'date',
-     *             'value': '',
-     *             'content': '',
-     *             'class': ''
-     *         },]
+     * Initialisation du formulaire dynamique.
+     * @param {string} selector - Le sélecteur CSS où insérer le formulaire.
+     * @param {Object} options - Options de configuration.
+     * @param {boolean} options.debug - Active le mode débogage.
      */
     constructor(selector = '', {debug = false}) {
 
 
-        this._entity = [{'html_element': 'input', 'type': 'number', 'name': 'name_1', 'label': 'name_1', 'value': '', 'content' : '', 'class' : ''},
-            {'html_element': 'input', 'type': 'text', 'label': 'name_1', 'name': 'name_2', 'value': '', 'content' : '', 'class' : ''},
-            {'html_element': 'input', 'type': 'password', 'label': 'name_1', 'name': 'name_3', 'value': '', 'content' : '', 'class' : ''},
-        ]; // exemple
+        this._entity = []; // exemple
         this._jsonService = new JsonService();
         this._templateService = new TemplateService();
         this._onDataEditTimeOut = null;
         this._selector = selector;
 
         if (debug) {
-            return new DebugService(this); // Retourner une instance proxy de débogage
+            return new DebugService(this); // Retourne une instance proxy pour le débogage
         }
         return this;
     }
 
+    /**
+     * Accesseur des entités.
+     * Retourne une copie profonde pour éviter les modifications directes.
+     */
     get entity(){
         //clonage profond pour éviter le passage par référence dans le json créé ensuite et les pbs d'updates
         return JSON.parse(JSON.stringify(this._entity));
     }
 
     getEntityData(){
+        console.log(this._entity);
         //clonage profond pour éviter le passage par référence dans le json créé ensuite et les pbs d'updates
         return JSON.parse(
             JSON.stringify(
@@ -63,22 +61,41 @@ export default class DyJsForm {
         );
     }
 
-    set entity(array){
-        this._entity = array;
+    // set entity(array){
+    //     this._entity = array;
+    //     return this;
+    // }
+
+    set entity(array) {
+        this._entity = array.map(data => {
+            console.log(data);
+            // Traiter les options s'il y en a, sinon définir un tableau vide
+            const options = (data.options || []).map(opt => new OptionDTO(
+                {
+                    name : opt.name || "",
+                    value : opt.value || "",
+                    max_count : opt.max_count || null
+                }
+
+            ));
+
+            // Retourner un nouvel EntityDTO
+            return new EntityDTO(
+                {
+                    htmlElement: data.htmlElement || "",
+                    type: data.type || "",
+                    name: data.name || "",
+                    label: data.label || "",
+                    value: data.value || "",
+                    content: data.content || "",
+                    className: data.className || "",
+                    options: options}
+            );
+        });
+        console.log(this._entity)
         return this;
     }
 
-
-    get template(){
-        return this._templateService.templateName;
-    }
-
-    set template(templateName){
-        // premiere lettre en maj pour correspondre à la classe
-        this._templateService.templateName = templateName.charAt(0).toUpperCase()
-            + templateName.slice(1);
-        return this;
-    }
 
 
     get selector() {
@@ -100,6 +117,9 @@ export default class DyJsForm {
         return this;
     }
 
+    /**
+     * Rafraîchit le formulaire en rendant les données actuelles.
+     */
     refreshForm (){
         const form = this._templateService.formRender();
         document.querySelector('#dyjsform').innerHTML = form;// Utiliser la méthode getForm()
@@ -111,11 +131,18 @@ export default class DyJsForm {
         return this;
     }
 
+    /**
+     * Initialise les gestionnaires d'événements.
+     */
     initHandlers (){
 
         this.initEventListeners();
         this.handleInputKeyup();
     }
+
+    /**
+     * Initialise les gestionnaires d'événements pour ajouter et supprimer des lignes.
+     */
     initEventListeners () {
         // Ajouter une nouvelle ligne
         this.addHandler()

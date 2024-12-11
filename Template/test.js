@@ -20,7 +20,7 @@ export class Test {
         return `<div class="form-group col-md-${BSColumnWidth}">
             <div class="col-md-12">${field.label}</div>
             <div class="col-md-12">
-                <${field.html_element} class="form-control ${field.name}" type="${field.type}" value="${field.value}">
+                <${field.htmlElement} class="form-control ${field.name}" type="${field.type}" value="${field.value}">
             </div>
         </div>`;
     }
