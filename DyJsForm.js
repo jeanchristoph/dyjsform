@@ -1,4 +1,5 @@
-
+// TODO: Ajout de fonctionnalité de select en input avec des options parametrable
+// TODO: AJout de l'unicité de réponse a un input sur tout le formaulaire
 //TODO: Initialisé avec des données en js
 //TODO: Faire remonté un Json depuis le dom si appel depuis le php
 //TODO: Rendre le formaulaire en mode simple sans bouton ajouter
@@ -29,7 +30,7 @@ export default class DyJsForm {
      *             'class': ''
      *         },]
      */
-    constructor({debug = 0}) {
+    constructor(selector = '', {debug = false}) {
 
 
         this._entity = [{'html_element': 'input', 'type': 'number', 'name': 'name_1', 'label': 'name_1', 'value': '', 'content' : '', 'class' : ''},
@@ -39,8 +40,9 @@ export default class DyJsForm {
         this._jsonService = new JsonService();
         this._templateService = new TemplateService();
         this._onDataEditTimeOut = null;
+        this._selector = selector;
 
-        if (debug === 1) {
+        if (debug) {
             return new DebugService(this); // Retourner une instance proxy de débogage
         }
         return this;
@@ -78,11 +80,20 @@ export default class DyJsForm {
         return this;
     }
 
+
+    get selector() {
+        return this._selector;
+    }
+
+    set selector(value) {
+        this._selector = value;
+    }
+
     init () {
         this._templateService.loadTemplate().then(
             () => {
                 const form = this._templateService.formRender();
-                document.querySelector('#dyjsform').innerHTML = form;// Utiliser la méthode getForm()
+                document.querySelector(this._selector).innerHTML = form;// Utiliser la méthode getForm()
                 this.initHandlers();
             }
         );
