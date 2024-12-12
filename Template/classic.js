@@ -24,11 +24,14 @@ export class Classic {
         const name = !field.name.startsWith('dyjsform_action_') ? `name="dyjsform[${field.name}_${rowIndex}]"` :  '';
 
         if (field.htmlElement === 'select' && field.options){
+            console.log(field.options);
             content += `<option></option>`;
             field.options.forEach(option => {
-                let maxCount= option.maxCount ? `data-maxCount=${option.maxCount}` : '';
+                // pas besoin de mettre les max count en data car déjà dans le json
+                // let maxCount= option.maxCount ? `data-maxCount=${option.maxCount}` : '';
                 let selected= field.value === option.value ? 'selected' : '';
-                content += `<option ${selected} value="${option.value}" ${maxCount}>${option.name}</option>`;
+                // content += `<option ${selected} value="${option.value}" ${maxCount}>${option.name}</option>`;
+                content += `<option ${selected} value="${option.value}">${option.name}</option>`;
             })
         } else {
             content = field.content ? `${field.content}` : '';
