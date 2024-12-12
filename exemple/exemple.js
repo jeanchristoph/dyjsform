@@ -15,8 +15,8 @@ document.addEventListener('DOMContentLoaded', function() {
             'className': '',
             'options': [
                 {'name':'bac', 'value' : 'bac'},
-                {'name':'newsletter', 'value' : 'newsletter','max_count': 1},
-                {'name':'condition generales', 'value' : 'conditions_generales','max_count': 1},
+                {'name':'newsletter', 'value' : 'newsletter','maxCount': 1},
+                {'name':'condition generales', 'value' : 'conditions_generales','maxCount': 1},
             ]
         },
         {

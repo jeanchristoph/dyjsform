@@ -1,4 +1,3 @@
-// TODO: Ajout de fonctionnalité de select en input avec des options parametrable
 // TODO: AJout de l'unicité de réponse a un input sur tout le formaulaire
 //TODO: Initialisé avec des données en js
 //TODO: Faire remonté un Json depuis le dom si appel depuis le php
@@ -51,17 +50,13 @@ export default class DyJsForm {
     }
 
     getEntityData(){
-        console.log('getEntityData');
-        console.log(this._entity);
         //clonage profond pour éviter le passage par référence dans le json créé ensuite et les pbs d'updates
         return JSON.parse(
-
             JSON.stringify(
                 // Créer un tableau filtré : pour enlever les boutons actions
                 this._entity.filter(item => !item.name.startsWith('dyjsform_action_'))
             )
         );
-        console.log('apres parse');
     }
 
     // set entity(array){
@@ -71,13 +66,12 @@ export default class DyJsForm {
 
     set entity(array) {
         this._entity = array.map(data => {
-            console.log(data);
             // Traiter les options s'il y en a, sinon définir un tableau vide
             const options = (data.options || []).map(opt => new OptionDTO(
                 {
                     name : opt.name || "",
                     value : opt.value || "",
-                    max_count : opt.max_count || null
+                    maxCount : opt.maxCount || null
                 }
 
             ));
@@ -95,7 +89,6 @@ export default class DyJsForm {
                     options: options}
             );
         });
-        console.log(this._entity)
         return this;
     }
 
@@ -182,16 +175,25 @@ export default class DyJsForm {
     }
 
     onDataEdit (element){
-        if (this._onDataEditTimeOut){
-            clearTimeout(this._onDataEditTimeOut);
-        }
-        this._onDataEditTimeOut = setTimeout(() => {
+        console.log(element);
+        // plus besoin de timeout (était seuelemnt utiles lors de test ? )
+        // if (this._onDataEditTimeOut){
+        //     clearTimeout(this._onDataEditTimeOut);
+        // }
+        // this._onDataEditTimeOut = setTimeout(() => {
             let rowNumber = element.getAttribute('data-row');
             let fieldName = element.getAttribute('data-name');
             let value = element.value;
-            this._jsonService.updateJsonByField(rowNumber,fieldName, value);
+            try {
+                this._jsonService.updateJsonByField(rowNumber,fieldName, value);
+            } catch (e){
+                console.log(e)
+                console.error('ERREUR :', e[0].message);
+                this.refreshForm();
+            }
+
             this.writeOutputJson()
-        },1000)
+        // },1000)
     }
 
 

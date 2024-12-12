@@ -1,7 +1,10 @@
+import ValidatorService from "./ValidatorService.js";
+
 export default class JsonService {
     constructor() {
         this._json = [];
         this._outputJson = [];
+        // this._validatorService = new ValidatorService();
     }
 
 
@@ -165,11 +168,24 @@ export default class JsonService {
 
     updateJsonByField(rowNumber,fieldName, value) {
         let json = this.json;
+        console.log(json);
+
         json[rowNumber].forEach((element, index)=> {
             if (element.name === fieldName){
                 element.value = value;
             }
         })
+
+
+        const validationResult = ValidatorService.validateMaxCount(json);
+        if (validationResult.valid) {
+            console.log("Validation réussie : Aucun conflit détecté.");
+        } else {
+            // console.error("Validation échouée : ", validationResult.errors);
+            // throw new Error("Validation échouée : " +  validationResult.errors[0].message);
+            throw validationResult.errors;
+        }
+
         this.json = json
     }
 

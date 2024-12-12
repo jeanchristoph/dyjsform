@@ -19,7 +19,7 @@ export default class OptionDTO {
         return {
             name: this.name,
             value: this.value,
-            max_count: this.maxCount
+            maxCount: this.maxCount
         };
     }
 }
