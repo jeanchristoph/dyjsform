@@ -12,7 +12,7 @@ export default class EntityDTO {
      * @param {string} param.className - Classe CSS de l'élément.
      * @param {Array} param.options - Liste des options de l'élément (si applicable).
      */
-    constructor({htmlElement, type, name, label, value, content, className, options}) {
+    constructor({htmlElement, type, name, label, value, content, className, options, error}) {
         this.htmlElement = htmlElement || ''; // Type de l'élément HTML (e.g., 'select')
         this.type = type || ''; // Type additionnel (si applicable)
         this.name = name || ''; // Nom de l'élément
@@ -21,6 +21,7 @@ export default class EntityDTO {
         this.content = content || ''; // Contenu éventuel de l'élément
         this.className = className || ''; // Classe CSS
         this.options = Array.isArray(options) ? options.map(opt => new OptionDTO(opt)) : []; // Liste d'options, chaque option est une instance de OptionDTO
+        this.error = error || ''; // L'erreur remontée par ValidatorService
     }
 
     /**
@@ -36,7 +37,8 @@ export default class EntityDTO {
             value: this.value,
             content: this.content,
             className: this.className,
-            options: this.options // Inclut les options sous forme d'un tableau d'objets OptionDTO
+            options: this.options, // Inclut les options sous forme d'un tableau d'objets OptionDTO
+            error: this.error // Inclut les options sous forme d'un tableau d'objets OptionDTO
         };
     }
 }

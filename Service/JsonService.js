@@ -168,24 +168,51 @@ export default class JsonService {
 
     updateJsonByField(rowNumber,fieldName, value) {
         let json = this.json;
+        let result = {'success': true, 'errors': null}
         console.log(json);
 
         json[rowNumber].forEach((element, index)=> {
             if (element.name === fieldName){
                 element.value = value;
+                const validationResult = ValidatorService.validateMaxCount(json);
+                if (validationResult.valid) {
+                    console.log("Validation réussie : Aucun conflit détecté.");
+                } else {
+                    element.value = '';
+                    console.log(validationResult);
+                    this.displayError(validationResult);
+                    //TODO ne fonctione pas car le json pris dans displayError est celui d'avant la modif : element.value = '';
+                    result.success = false;
+                    result.errors = validationResult.errors;
+                }
             }
         })
-
-
-        const validationResult = ValidatorService.validateMaxCount(json);
-        if (validationResult.valid) {
-            console.log("Validation réussie : Aucun conflit détecté.");
-        } else {
-            // console.error("Validation échouée : ", validationResult.errors);
-            // throw new Error("Validation échouée : " +  validationResult.errors[0].message);
-            throw validationResult.errors;
+        if (result.success){
+            this.json = json
+            this.errorClean();
         }
+        console.log(this.json);
+        return result;
+    }
 
+    displayError (validationResult) {
+        this.errorClean();
+        let json = this.json;
+        validationResult.errors.map(
+            errorGroup => errorGroup.occurrences.map(
+                error => {
+                    json[error.rowIndex].find(entity => entity.name === error.name).error = errorGroup.message;
+                    console.log(error.rowIndex + ',' + error.name)
+                }
+            )
+        )
+        this.json = json
+    }
+
+
+    errorClean() {
+        let json = this.json;
+        json.map(row => row.map(entity => entity.error = ''));
         this.json = json
     }
 

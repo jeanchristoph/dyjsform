@@ -35,6 +35,7 @@ export default class DyJsForm {
         this._templateService = new TemplateService();
         this._onDataEditTimeOut = null;
         this._selector = selector;
+        this._errors = [];
 
         if (debug) {
             return new DebugService(this); // Retourne une instance proxy pour le débogage
@@ -88,7 +89,10 @@ export default class DyJsForm {
                     value: data.value || "",
                     content: data.content || "",
                     className: data.className || "",
-                    options: options}
+                    options: options,
+                    error: data.error || "",
+
+                }
             );
         });
         return this;
@@ -121,7 +125,10 @@ export default class DyJsForm {
     refreshForm (){
         const form = this._templateService.formRender();
         document.querySelector('#dyjsform').innerHTML = form;// Utiliser la méthode getForm()
-
+        console.log('this._jsonService.json')
+        console.log(this._jsonService.json)
+console.log('this._jsonService.json')
+console.log(this._jsonService.json)
         const row = this._templateService.rowRender(this.entity, this._jsonService.json);
         document.querySelector('#dyjsform_container').innerHTML = row; // Utiliser += pour ajouter le contenu
         this.writeOutputJson();
@@ -177,25 +184,20 @@ export default class DyJsForm {
     }
 
     onDataEdit (element){
-        console.log(element);
-        // plus besoin de timeout (était seuelemnt utiles lors de test ? )
-        // if (this._onDataEditTimeOut){
-        //     clearTimeout(this._onDataEditTimeOut);
-        // }
-        // this._onDataEditTimeOut = setTimeout(() => {
-            let rowNumber = element.getAttribute('data-row');
-            let fieldName = element.getAttribute('data-name');
-            let value = element.value;
-            try {
-                this._jsonService.updateJsonByField(rowNumber,fieldName, value);
-            } catch (e){
-                console.log(e)
-                console.error('ERREUR :', e[0].message);
-                this.refreshForm();
-            }
+        let rowNumber = element.getAttribute('data-row');
+        let fieldName = element.getAttribute('data-name');
+        let value = element.value;
 
-            this.writeOutputJson()
-        // },1000)
+        let jsonUpdated = this._jsonService.updateJsonByField(rowNumber,fieldName, value);
+
+        if (!jsonUpdated.success) {
+            this._errors = jsonUpdated.errors;
+            this.refreshForm();
+        } else if (this._errors.length > 0){
+            this._errors =  [];
+            this.refreshForm();
+        }
+        this.writeOutputJson()
     }
 
 
