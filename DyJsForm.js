@@ -1,4 +1,6 @@
 // TODO: AJout de l'unicité de réponse a un input sur tout le formaulaire
+// TODO:    => Faire pointer sur le champs de l'erreur en question
+// TODO:    => ajouter un system de tooltips pour faire apparaitre l'erreur
 //TODO: Initialisé avec des données en js
 //TODO: Faire remonté un Json depuis le dom si appel depuis le php
 //TODO: Rendre le formaulaire en mode simple sans bouton ajouter
