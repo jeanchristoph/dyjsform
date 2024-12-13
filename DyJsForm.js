@@ -1,12 +1,12 @@
-// TODO: AJout de l'unicité de réponse a un input sur tout le formaulaire
-// TODO:    => Faire pointer sur le champs de l'erreur en question
-// TODO:    => ajouter un system de tooltips pour faire apparaitre l'erreur
 //TODO: Initialisé avec des données en js
+// TODO: ajouter un system de tooltips pour faire apparaitre les erreurs
 //TODO: Faire remonté un Json depuis le dom si appel depuis le php
 //TODO: Rendre le formaulaire en mode simple sans bouton ajouter
 //TODO: ajouter un bouton submit
+// TODO laisser aussi la possibilité plus tard de faire juste un formaulaire banal sans ajout ni suppression avec un bouton valider.
 //TODO: ajouter une action post AJAX ou PHP
 //TODO: ajouter une action post classique ?
+
 //TODO: Eviter Bootstrap et passer en flex ?
 //TODO: Customiser les message erreurs
 
@@ -110,13 +110,23 @@ export default class DyJsForm {
     }
 
     init () {
+        const dataJson = JSON.parse(document.querySelector(this._selector).getAttribute('data-json'));
         this._templateService.loadTemplate().then(
             () => {
                 const form = this._templateService.formRender();
                 document.querySelector(this._selector).innerHTML = form;// Utiliser la méthode getForm()
                 this.initHandlers();
+
+                if ( dataJson !== '') {
+                    this._jsonService.addRow(this.entity); // besoin d'une premiere raw pour initialisé le json
+                    this._jsonService.loadReducedJson(dataJson)
+                    this.refreshForm();
+                }
+
             }
-        );
+        )
+
+
         return this;
     }
 
