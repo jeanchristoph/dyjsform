@@ -166,54 +166,102 @@ export default class JsonService {
     }
 
 
-    updateJsonByField(rowNumber,fieldName, value) {
+    updateJsonByField(rowIndex,fieldName, value) {
         let json = this.json;
-        let result = {'success': true, 'errors': null}
         console.log(json);
 
-        json[rowNumber].forEach((element, index)=> {
+        // Met à jour la valeur de l'entité spécifiée
+        json[rowIndex].forEach(element => {
             if (element.name === fieldName){
                 element.value = value;
-                const validationResult = ValidatorService.validateMaxCount(json);
-                if (validationResult.valid) {
-                    console.log("Validation réussie : Aucun conflit détecté.");
-                } else {
-                    element.value = '';
-                    console.log(validationResult);
-                    this.displayError(validationResult);
-                    //TODO ne fonctione pas car le json pris dans displayError est celui d'avant la modif : element.value = '';
-                    result.success = false;
-                    result.errors = validationResult.errors;
-                }
             }
-        })
-        if (result.success){
-            this.json = json
-            this.errorClean();
+        });
+
+        // Valide le JSON après modification
+        const result = this.validate(json, rowIndex);
+
+        if (result.success) {
+            console.log("result.success");
+            console.log("errorClean");
+            json = this.errorClean(json); // Nettoie les erreurs éventuelles
+        } else {
+            json = this.displayError(result, json, rowIndex); // Affiche les erreurs si validation échoue
         }
-        console.log(this.json);
+        this.json = json; // Met à jour l'état si tout est valide
+
+        console.log(this.json); // Affiche l'état final du JSON
         return result;
     }
 
-    displayError (validationResult) {
-        this.errorClean();
-        let json = this.json;
-        validationResult.errors.map(
-            errorGroup => errorGroup.occurrences.map(
-                error => {
-                    json[error.rowIndex].find(entity => entity.name === error.name).error = errorGroup.message;
-                    console.log(error.rowIndex + ',' + error.name)
+    validate(json) {
+        const validationResult = ValidatorService.validateMaxCount(json);
+        if (validationResult.valid) {
+            console.log("Validation réussie : Aucun conflit détecté.");
+            return { success: true, errors: null };
+        } else {
+            console.log("Validation échouée :", validationResult);
+            return { success: false, errors: validationResult.errors };
+        }
+    }
+
+    displayError (validationResult, json, rowIndex = null) {
+        console.log(validationResult);
+        console.log('displayError');
+
+        // Ajoute les erreurs au bon endroit dans le JSON
+        if (rowIndex !== null) {
+            validationResult.errors.forEach(errorGroup => {
+                const error = errorGroup.occurrences.find(err => err.rowIndex === rowIndex);
+
+                console.log('errorGroup.occurrences')
+                console.log(errorGroup.occurrences)
+                console.log('rowIndex')
+                console.log(rowIndex)
+                console.log('error')
+                console.log(error)
+                if (error) {
+                    const entity = json[rowIndex].find(entity => entity.name === error.name);
+                    console.log('entity')
+                    console.log(entity)
+                    if (entity) {
+                        console.log('entity.error')
+                        console.log(entity.error)
+                        console.log('entity.value')
+                        console.log(entity.value)
+                        entity.error = errorGroup.message; // Ajoute le message d'erreur
+                        entity.value = ''; // Ajoute le message d'erreur
+                    }
+                    console.log("json")
+                    console.log(json)
                 }
-            )
-        )
-        this.json = json
+            });
+
+        } else {
+            validationResult.errors.forEach(errorGroup => {
+                errorGroup.occurrences.forEach(error => {
+                    const entity = json[error.rowIndex].find(ent => ent.name === error.name);
+                    if (entity) {
+                        entity.error = errorGroup.message;
+                    }
+                });
+            });
+        }
+        return json;
     }
 
 
-    errorClean() {
-        let json = this.json;
-        json.map(row => row.map(entity => entity.error = ''));
-        this.json = json
+    errorClean(json) {
+        json = json.map(row =>
+            row.map(entity => ({ ...entity, error: '' })) // Réinitialise les erreurs sans modifier les références
+        );
+        return json;
     }
+
+
+    // errorClean(json) {
+    //     json.map(row => row.map(entity => entity.error = ''));
+    //     return json;
+    // }
+
 
 }
