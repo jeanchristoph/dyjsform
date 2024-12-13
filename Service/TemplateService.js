@@ -9,9 +9,7 @@ export default class TemplateService {
     }
 
     set templateName(value) {
-
         value = value.charAt(0).toUpperCase() + value.slice(1);
-        console.log(value);
         this._templateName = value;
     }
 
