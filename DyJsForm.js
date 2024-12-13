@@ -8,6 +8,7 @@
 //TODO: ajouter une action post AJAX ou PHP
 //TODO: ajouter une action post classique ?
 //TODO: Eviter Bootstrap et passer en flex ?
+//TODO: Customiser les message erreurs
 
 //TO DO: ajouter des verifications -> Sort du périmetre
 //TO DO: ajouter les bulles -> Sort du périmetre
@@ -125,10 +126,6 @@ export default class DyJsForm {
     refreshForm (){
         const form = this._templateService.formRender();
         document.querySelector('#dyjsform').innerHTML = form;// Utiliser la méthode getForm()
-        console.log('this._jsonService.json')
-        console.log(this._jsonService.json)
-console.log('this._jsonService.json')
-console.log(this._jsonService.json)
         const row = this._templateService.rowRender(this.entity, this._jsonService.json);
         document.querySelector('#dyjsform_container').innerHTML = row; // Utiliser += pour ajouter le contenu
         this.writeOutputJson();
@@ -184,7 +181,7 @@ console.log(this._jsonService.json)
     }
 
     onDataEdit (element){
-        let rowNumber = element.getAttribute('data-row');
+        let rowNumber = parseInt(element.getAttribute('data-row'));
         let fieldName = element.getAttribute('data-name');
         let value = element.value;
 
