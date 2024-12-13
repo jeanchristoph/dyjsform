@@ -2,7 +2,7 @@ import DyJsForm from '../DyJsForm.js';
 
 // MODULE ADHESION
 document.addEventListener('DOMContentLoaded', function() {
-    let dyjsform = new DyJsForm('#dyjsform',{debug : true});
+    let dyjsform = new DyJsForm('#dyjsform',{debug : false});
     dyjsform.template ='classic' ;
     dyjsform.entity = [
         {
@@ -65,5 +65,5 @@ document.addEventListener('DOMContentLoaded', function() {
     ];
     dyjsform.init();
 // MODULE ADHESION FIN
-    // TODO laisser aussi la possibilité plus tard de faire juste un formaulaire banal sans ajout ni suppression avec un bouton valider.
+
 });

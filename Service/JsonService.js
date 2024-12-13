@@ -19,12 +19,16 @@ export default class JsonService {
         return JSON.parse(
             JSON.stringify(
                 // Créer un tableau filtré : pour enlever les boutons actions à l'interieur du tableau parent
-                this._json.map(row =>
-
-                    row.filter(field => !field.name.startsWith('dyjsform_action_'))
-                )
+                this.removeAction(this.json)
             )
         );
+    }
+
+    removeAction(json) {
+        json.map(row =>
+            row.filter(field => !field.name.startsWith('dyjsform_action_'))
+        )
+        return json;
     }
 
     set json(json) {
@@ -37,8 +41,9 @@ export default class JsonService {
                 break;
         }
         this.outputJson = this.getJsonData();
-
     }
+    
+
 
 
     addRow (entity) {
@@ -98,77 +103,47 @@ export default class JsonService {
         return ReducedJson;
     }
 
-    populateJson(json) {
+    loadReducedJson(outputJson) {
+        let json = this.json;
         // Vérifiez si json a plus de lignes que this._json
-        while (this._json.length < json.length) {
+        while (json.length < outputJson.length) {
             // Ajoutez une copie de la dernière ligne de this._json avec les valeurs vides
-            const templateRow = this._json[this._json.length - 1].map(field => ({
+            const templateRow = json[json.length - 1].map(field => ({
                 ...field,
                 value: ''
             }));
-            this._json.push(templateRow);
+            json.push(templateRow);
         }
 
-        // Mettez à jour les valeurs à partir de json
-        this._json = this._json.map((row, rowIndex) => {
-            if (json[rowIndex]) {
-                return row.map(field => {
-                    const correspondingField = json[rowIndex].find(f => f.name === field.name);
-                    return correspondingField
-                        ? { ...field, value: correspondingField.value }
-                        : field;
-                });
-            }
-            return row;
-        });
-    }
+        //Mettez à jour les valeurs à partir de json
+        const updatedJson = json.map((row, rowIndex) => {
+            return row.map((field, fieldIndex) => {
+                // Créez une copie de l'objet field avant de le modifier
+                const newField = { ...field };
 
+                if (!newField.name.startsWith('dyjsform_action_')) {
+                    // Obtenez la première clé de l'objet (par exemple, "name_number")
+                    const fieldKey = Object.keys(outputJson[rowIndex][fieldIndex]);
+                    const outputJsonValue =
+                        Object.keys(outputJson[rowIndex][fieldIndex]).find(key => key === newField.name) ?
+                            outputJson[rowIndex][fieldIndex][newField.name] :
+                            '';
 
-
-
-// Charger le JSON à l'affichage de la page et générer les entitys
-    loadJson() {
-        let entitiesArray = [];
-        let entityArray = [];
-        if (document.querySelector('#dyjsform_options') ){
-            const jsonString = document.querySelector('#dyjsform_options').value;
-            if (jsonString) {
-                try {
-                    const jsonString = document.querySelector('#dyjsform_options').value;
-
-                    // if (jsonString) {
-                    //     try {
-                    //         const jsonData = JSON.parse(jsonString);
-                    //         var entityClone = null;
-                    //         jsonData.forEach((jsonValues) =>  {
-                    //             entityClone = JSON.parse(JSON.stringify(this._entity));
-                    //             entityClone.forEach(entity => {
-                    //                 for (let jsonName in jsonValues) {
-                    //                     if (entity.name === jsonName) {
-                    //                         entity.value = jsonValues[jsonName];
-                    //                     }
-                    //                 }
-                    //
-                    //             });
-                    //             entityArray.push(entityClone)
-                    //         });
-                    //     } catch (error) {
-                    //         console.error("Erreur lors de l'analyse du JSON : ", error);
-                    //     }
-                    // }
-                } catch (error) {
-                    console.error("Erreur lors de l'analyse du JSON : ", error);
+                    // Assignez la valeur sans modifier l'objet original
+                    newField.value = outputJsonValue;
                 }
-            }
-        }
-        return entityArray;
 
+                // Retourne la copie modifiée, sans toucher à l'original
+                return newField;
+            });
+        });
+
+        this.json = updatedJson;
     }
 
 
     updateJsonByField(rowIndex,fieldName, value) {
         let json = this.json;
-        console.log(json);
 
         // Met à jour la valeur de l'entité spécifiée
         json[rowIndex].forEach(element => {
@@ -181,15 +156,11 @@ export default class JsonService {
         const result = this.validate(json, rowIndex);
 
         if (result.success) {
-            console.log("result.success");
-            console.log("errorClean");
             json = this.errorClean(json); // Nettoie les erreurs éventuelles
         } else {
             json = this.displayError(result, json, rowIndex); // Affiche les erreurs si validation échoue
         }
         this.json = json; // Met à jour l'état si tout est valide
-
-        console.log(this.json); // Affiche l'état final du JSON
         return result;
     }
 
@@ -205,34 +176,18 @@ export default class JsonService {
     }
 
     displayError (validationResult, json, rowIndex = null) {
-        console.log(validationResult);
-        console.log('displayError');
 
         // Ajoute les erreurs au bon endroit dans le JSON
         if (rowIndex !== null) {
             validationResult.errors.forEach(errorGroup => {
                 const error = errorGroup.occurrences.find(err => err.rowIndex === rowIndex);
 
-                console.log('errorGroup.occurrences')
-                console.log(errorGroup.occurrences)
-                console.log('rowIndex')
-                console.log(rowIndex)
-                console.log('error')
-                console.log(error)
                 if (error) {
                     const entity = json[rowIndex].find(entity => entity.name === error.name);
-                    console.log('entity')
-                    console.log(entity)
                     if (entity) {
-                        console.log('entity.error')
-                        console.log(entity.error)
-                        console.log('entity.value')
-                        console.log(entity.value)
                         entity.error = errorGroup.message; // Ajoute le message d'erreur
                         entity.value = ''; // Ajoute le message d'erreur
                     }
-                    console.log("json")
-                    console.log(json)
                 }
             });
 
