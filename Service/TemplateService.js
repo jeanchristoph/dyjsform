@@ -30,28 +30,27 @@ export default class TemplateService {
         return template;
     }
 
-    formRender () {
-        const template = this._template;
-        return template.getForm();
+
+    renderForm (selector) {
+        document.querySelector(selector).innerHTML = this._template.getForm(selector);
+        return this;
     }
 
     // Fonction pour créer une entity dans le formulaire Bootstrap 5
-    rowRender(entity, json) {
+    renderRow(selector, entity, json) {
         const template = this._template;
-        const containerContent = document.querySelector('#dyjsform_container').innerHTML;
-        let begin = `<div class="row form-group align-items-center dyjsform_entity">`;
-        let end = `</div>`;
+        const containerContent = document.querySelector(selector + ' .dyjsform_container').innerHTML;
         let rows = json;
         let HtmlForm = containerContent;
 
-        HtmlForm += begin;
+        HtmlForm += template.getBegin();
         // for (let row of rows ) {
         rows.forEach((row, rowIndex) => {
             HtmlForm +=  this.fieldRender(entity, row, rowIndex);
         });
-        HtmlForm += end;
-
-        return HtmlForm;
+        HtmlForm += template.getEnd();
+        document.querySelector(selector + ' .dyjsform_container').innerHTML = HtmlForm; // Utiliser += pour ajouter le contenu
+        return this;
 
     }
 
@@ -65,6 +64,21 @@ export default class TemplateService {
             Html += template.getField(field,rowIndex, BSColumnWidth );
         }
         return Html;
+    }
+
+    injectCSS() {
+        var style = document.createElement('style');
+        style.textContent = this._template.getCss();
+        style.setAttribute('data-dyjsform-stylesheet', '');
+        var head = document.head;
+        var firstStyleOrLinkTag = document.querySelector('head>style,head>link');
+
+        if (firstStyleOrLinkTag) {
+            head.insertBefore(style, firstStyleOrLinkTag);
+        } else {
+            head.appendChild(style);
+        }
+        return this;
     }
 
 

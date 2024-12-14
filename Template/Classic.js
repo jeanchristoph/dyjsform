@@ -1,9 +1,15 @@
 export class Classic {
 
-    getForm() {
+    getBegin(){
+        return `<div class="row form-group align-items-center dyjsform_entity">`;
+    }
+    getEnd(){
+        return `<div>`;
+    }
+    getForm(selector) {
         return `
-            <div id="dyjsform_container"></div>
-            <div  id="dyjsform_footer" class=" row form-group align-items-center">
+            <div class="dyjsform_container"></div>
+            <div  class="dyjsform_footer" class=" row form-group align-items-center">
                 <div class="col-md-3"></div>
                 <div class="col-md-6">
                     <button type="button" class="form-control btn btn-primary dyjsform_action_add">
@@ -11,8 +17,8 @@ export class Classic {
                     </button>
                 </div>
             </div>
-                <textarea rows="30" cols="150" name="dyjsform[dyjsform_options]"
-                       id="dyjsform_options"></textarea>
+                <textarea rows="30" cols="150" name="${selector}[output]"
+                       class="output"></textarea>
             `;
     }
 
@@ -43,6 +49,15 @@ export class Classic {
                 <span class="text-danger djf_error">${field.error}</span>
             </div>
         </div>`;
+    }
+
+    getCss() {
+        return `
+        * {
+            color : red
+        }
+        `;
+
     }
 
 
