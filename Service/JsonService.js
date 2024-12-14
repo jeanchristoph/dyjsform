@@ -139,6 +139,7 @@ export default class JsonService {
         });
 
         this.json = updatedJson;
+        return this;
     }
 
 
@@ -165,7 +166,7 @@ export default class JsonService {
     }
 
     validate(json) {
-        const validationResult = ValidatorService.validateMaxCount(json);
+        const validationResult = ValidatorService.maxCount(json);
         if (validationResult.valid) {
             console.log("Validation réussie : Aucun conflit détecté.");
             return { success: true, errors: null };
