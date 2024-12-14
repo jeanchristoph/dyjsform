@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'className': '',
             'options': [
                 {'name':'bac', 'value' : 'bac'},
-                {'name':'newsletter', 'value' : 'newsletter','maxCount': 1},
+                {'name':'newsletter', 'value' : 'newsletter','maxCount': 2},
                 {'name':'condition generales', 'value' : 'conditions_generales','maxCount': 1},
             ]
         },
@@ -63,7 +63,13 @@ document.addEventListener('DOMContentLoaded', function() {
             'className': 'btn btn-warning'
         },
     ];
-    dyjsform.init();
+    const json = `
+    [[{"type_adhesion":"newsletter"},{"name_text":"test"},{"name_number":"1"},{"name_email":"malaval@topdata.fr"},
+        {"name_password":"pass"}],[{"type_adhesion":""},{"name_text":""},{"name_number":"2"},{"name_email":""},
+        {"name_password":""}],[{"type_adhesion":"conditions_generales"},{"name_text":""},{"name_number":""},
+        {"name_email":""},{"name_password":"password"}]]
+        `
+    dyjsform.init(json);
 // MODULE ADHESION FIN
 
 });

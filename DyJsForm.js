@@ -1,17 +1,21 @@
-//TODO: Initialisé avec des données en js
+// TODO: ajouter attr dans les entités
+// TODO: ajouter maxCount dans les entités
 // TODO: ajouter un system de tooltips pour faire apparaitre les erreurs
-//TODO: Faire remonté un Json depuis le dom si appel depuis le php
-//TODO: Rendre le formaulaire en mode simple sans bouton ajouter
-//TODO: ajouter un bouton submit
+// TODO: Rendre le formaulaire en mode simple sans bouton ajouter
+// TODO: ajouter un bouton submit
 // TODO laisser aussi la possibilité plus tard de faire juste un formaulaire banal sans ajout ni suppression avec un bouton valider.
-//TODO: ajouter une action post AJAX ou PHP
-//TODO: ajouter une action post classique ?
+// TODO: ajouter une action post AJAX ou PHP
+// TODO: ajouter une action post classique ?
+// TODO: Eviter Bootstrap et passer en flex ?
+// TODO: Customiser les message erreurs
+// TODO: Ajouter un systeme d'éveneent avec des trigger event et des on change par exemple ? preEdit , postEdit
+// TODO: Ajouter un moyen simple de pouvoir manipuler des row et des colonnes pour que l'utilisateur puisse faire des traitements apres un evenement
+// TODO: Permettre de pouvoir ajouter des fonction de vérificatiob a la volé dans le JSon avec passage d'un arguement
 
-//TODO: Eviter Bootstrap et passer en flex ?
-//TODO: Customiser les message erreurs
 
-//TO DO: ajouter des verifications -> Sort du périmetre
-//TO DO: ajouter les bulles -> Sort du périmetre
+
+//TO DO: ajouter librairie de validation ? just-validate, validate.js -> Sort du périmetre
+//TO DO: ajouter les bulles : tippyjs ?-> Sort du périmetre
 
 
 import JsonService from './Service/JsonService.js';
@@ -30,11 +34,9 @@ export default class DyJsForm {
      */
     constructor(selector = '', {debug = false}) {
 
-
-        this._entity = []; // exemple
+        this._entity = [];
         this._jsonService = new JsonService();
         this._templateService = new TemplateService();
-        this._onDataEditTimeOut = null;
         this._selector = selector;
         this._errors = [];
 
@@ -109,17 +111,20 @@ export default class DyJsForm {
         this._selector = value;
     }
 
-    init () {
-        const dataJson = JSON.parse(document.querySelector(this._selector).getAttribute('data-json'));
+    init (json = '') {
+        const jsonHtml = document.querySelector(this._selector).getAttribute('data-json');
+        const jsonData = json !== '' ? JSON.parse(json) : jsonHtml !== '' ? JSON.parse(jsonHtml) : null;// JS data > HTML data
         this._templateService.loadTemplate().then(
             () => {
-                const form = this._templateService.formRender();
-                document.querySelector(this._selector).innerHTML = form;// Utiliser la méthode getForm()
+                this._templateService
+                    .renderForm(this._selector)
+                    .injectCSS();
                 this.initHandlers();
 
-                if ( dataJson !== '') {
-                    this._jsonService.addRow(this.entity); // besoin d'une premiere raw pour initialisé le json
-                    this._jsonService.loadReducedJson(dataJson)
+                if (jsonData) {
+                    this._jsonService
+                        .addRow(this.entity)
+                        .loadReducedJson(jsonData); // besoin d'une premiere raw pour initialisé le json
                     this.refreshForm();
                 }
 
@@ -134,10 +139,9 @@ export default class DyJsForm {
      * Rafraîchit le formulaire en rendant les données actuelles.
      */
     refreshForm (){
-        const form = this._templateService.formRender();
-        document.querySelector('#dyjsform').innerHTML = form;// Utiliser la méthode getForm()
-        const row = this._templateService.rowRender(this.entity, this._jsonService.json);
-        document.querySelector('#dyjsform_container').innerHTML = row; // Utiliser += pour ajouter le contenu
+        this._templateService
+            .renderForm(this._selector)
+            .renderRow(this._selector, this.entity, this._jsonService.json);
         this.writeOutputJson();
         this.initHandlers();
         return this;
@@ -147,7 +151,6 @@ export default class DyJsForm {
      * Initialise les gestionnaires d'événements.
      */
     initHandlers (){
-
         this.initEventListeners();
         this.handleInputKeyup();
     }
@@ -228,7 +231,7 @@ export default class DyJsForm {
 
 // Fonction pour générer le JSON
     writeOutputJson() {
-        document.querySelector('#dyjsform_options').value = JSON.stringify(this._jsonService.outputJson, null);
+        document.querySelector(this._selector + ' .output').value = JSON.stringify(this._jsonService.outputJson, null);
         return this;
     }
 

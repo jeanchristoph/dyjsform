@@ -5,7 +5,7 @@ export default class ValidatorService {
      * @returns {Object} - Résultat de la validation.
      *                    - { valid: boolean, errors: Array }.
      */
-    static validateMaxCount(json) {
+    static maxCount(json) {
         const valueOccurrences = {};
 
         // Méthode utilitaire pour enregistrer les occurrences
