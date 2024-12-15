@@ -7,10 +7,9 @@
         <item url="file://$PROJECT_DIR$/DyJsForm.min.js" />
         <item url="file://$PROJECT_DIR$/Service/JsonService.min.js" />
         <item url="file://$PROJECT_DIR$/Service/TemplateService.min.js" />
-        <item url="file://$PROJECT_DIR$/Service/validatorService.min.js" />
-        <item url="file://$PROJECT_DIR$/Template/classic.min.js" />
+        <item url="file://$PROJECT_DIR$/Service/ValidatorService.min.js" />
+        <item url="file://$PROJECT_DIR$/Template/Classic.min.js" />
         <item url="file://$PROJECT_DIR$/Template/index.min.js" />
-        <item url="file://$PROJECT_DIR$/Template/test.min.js" />
         <item url="file://$PROJECT_DIR$/exemple/exemple.min.js" />
         <item url="file://$PROJECT_DIR$/formEvents.min.js" />
       </sourceFilesUrls>
@@ -22,10 +21,10 @@
       <root url="file://$PROJECT_DIR$/Service/DebugService.min.js" />
       <root url="file://$PROJECT_DIR$/Service/JsonService.min.js" />
       <root url="file://$PROJECT_DIR$/Service/TemplateService.min.js" />
-      <root url="file://$PROJECT_DIR$/Service/validatorService.min.js" />
-      <root url="file://$PROJECT_DIR$/Template/classic.min.js" />
+      <root url="file://$PROJECT_DIR$/Service/ValidatorService.min.js" />
+      <root url="file://$PROJECT_DIR$/Template/Classic.min.js" />
+      <root url="file://$PROJECT_DIR$/Template/Test.min.js" />
       <root url="file://$PROJECT_DIR$/Template/index.min.js" />
-      <root url="file://$PROJECT_DIR$/Template/test.min.js" />
       <root url="file://$PROJECT_DIR$/exemple/exemple.min.js" />
       <root url="file://$PROJECT_DIR$/formEvents.min.js" />
     </CLASSES>

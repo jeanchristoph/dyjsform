@@ -26,7 +26,8 @@ document.addEventListener('DOMContentLoaded', function() {
             'label': 'text',
             'value': '',
             'content': '',
-            'className': ''
+            'className': '',
+            'maxCount': 1
         },
         {
             'htmlElement': 'input',
