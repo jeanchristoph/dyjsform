@@ -30,7 +30,7 @@ export default class DyJsForm {
      * @param {Object} options - Options de configuration.
      * @param {boolean} options.debug - Active le mode débogage.
      */
-    constructor(selector = '', {debug = false}) {
+    constructor(selector = '#dyjsform', {debug = false}) {
 
         this._entity = [];
         this._jsonService = new JsonService();
