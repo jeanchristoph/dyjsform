@@ -1,5 +1,3 @@
-// TODO: ajouter attr dans les entités
-// TODO: ajouter maxCount dans les entités
 // TODO: ajouter un system de tooltips pour faire apparaitre les erreurs
 // TODO: Rendre le formaulaire en mode simple sans bouton ajouter
 // TODO: ajouter un bouton submit
@@ -92,6 +90,8 @@ export default class DyJsForm {
                     value: data.value || "",
                     content: data.content || "",
                     className: data.className || "",
+                    attr: data.attr || "",
+                    maxCount : data.maxCount || "",
                     options: options,
                     error: data.error || "",
 
