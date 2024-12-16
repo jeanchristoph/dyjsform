@@ -22,7 +22,7 @@
 
 import JsonService from './Service/JsonService.js';
 import TemplateService from './Service/TemplateService.js';
-import DebugService from './Service/DebugService.js';
+import ProxyService from './Service/ProxyService.js';
 import EntityDTO from './DTO/EntityDTO.js';
 import OptionDTO from './DTO/OptionDTO.js';
 
@@ -32,12 +32,15 @@ export default class DyJsForm {
      * Initialisation du formulaire dynamique.
      * @param {string} selector - Le sélecteur CSS où insérer le formulaire.
      * @param {Object} options - Options de configuration.
-     * @param {boolean} options.debug - Active le mode débogage.
+     * @param {boolean} options.debugMode - Active le mode débogage.
      */
     constructor(
-        selector = '#dyjsform', {
-        isOutputKeyValue = true,
-        debug = false}  = {}
+        selector = '#dyjsform',
+        {
+            isOutputKeyValue = true,
+            debugMode = false
+        }  = {}
+
     ) {
 
         this._entity = [];
@@ -48,11 +51,7 @@ export default class DyJsForm {
 
         this._errors = [];
 
-
-        if (debug) {
-            return new DebugService(this); // Retourne une instance proxy pour le débogage
-        }
-        return this;
+        return new ProxyService(this, {debugMode : debugMode, selector : selector, dispatchAllEvents : false}); // Retourne une instance proxy
     }
 
     /**
