@@ -43,7 +43,6 @@ export default class ValidatorService {
                         );
                     }
                 } else if (entity.htmlElement === "input" && entity.maxCount !== '' && entity.value !== '') {
-                    console.log(entity.value);
                     addOccurrence(
                         entity.name,
                         entity.label || entity.name,
