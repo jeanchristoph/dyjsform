@@ -1,3 +1,7 @@
+// Script: dyJsForm.js
+// Version: 1.0.0
+// Auteur: Jean-Christophe Malaval
+
 // TODO: ajouter un system de tooltips pour faire apparaitre les erreurs
 // TODO: Rendre le formaulaire en mode simple sans bouton ajouter
 // TODO: ajouter un bouton submit
