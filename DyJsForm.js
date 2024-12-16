@@ -37,7 +37,7 @@ export default class DyJsForm {
     constructor(
         selector = '#dyjsform', {
         isOutputKeyValue = true,
-        debug = false}
+        debug = false}  = {}
     ) {
 
         this._entity = [];
