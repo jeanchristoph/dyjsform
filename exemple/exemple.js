@@ -2,7 +2,7 @@ import DyJsForm from '../DyJsForm.js';
 
 // MODULE ADHESION
 document.addEventListener('DOMContentLoaded', function() {
-    let dyjsform = new DyJsForm('#dyjsform',{debug : false});
+    let dyjsform = new DyJsForm('#dyjsform',{debug : false, isOutputKeyValue : true});
     dyjsform.template ='classic' ;
     dyjsform.entity = [
         {
@@ -64,13 +64,14 @@ document.addEventListener('DOMContentLoaded', function() {
             'className': 'btn btn-warning'
         },
     ];
-    const json = `
-    [[{"type_adhesion":"newsletter"},{"name_text":"test"},{"name_number":"1"},{"name_email":"example@example.com"},
-        {"name_password":"pass"}],[{"type_adhesion":""},{"name_text":""},{"name_number":"2"},{"name_email":""},
-        {"name_password":""}],[{"type_adhesion":"conditions_generales"},{"name_text":""},{"name_number":""},
-        {"name_email":""},{"name_password":"password"}]]
-        `
-    dyjsform.init(json);
+    // const json = `
+    // [[{"type_adhesion":"newsletter"},{"name_text":"test"},{"name_number":"1"},{"name_email":"example@example.com"},
+    //     {"name_password":"pass"}],[{"type_adhesion":""},{"name_text":""},{"name_number":"2"},{"name_email":""},
+    //     {"name_password":""}],[{"type_adhesion":"conditions_generales"},{"name_text":""},{"name_number":""},
+    //     {"name_email":""},{"name_password":"password"}]]
+    //     `
+    // dyjsform.init(json);
+    dyjsform.init();
 // MODULE ADHESION FIN
 
 });
