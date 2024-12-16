@@ -46,7 +46,7 @@ export class Classic {
         return `<div class="form-group col-md-${BSColumnWidth}">
             <div class="col-md-12">${field.label === '' ? '&nbsp;' : field.label}</div>
             <div class="col-md-12">
-                <${field.htmlElement} ${name} class="form-control ${field.name} ${className}" ${attr} ${type} ${value} 
+                <${field.htmlElement} ${name} class="form-control dyjsform_input ${field.name} ${className}" ${attr} ${type} ${value} 
                 data-row="${rowIndex}" data-name="${field.name}">${content}</${field.htmlElement}>
                 <span class="text-danger djf_error">${field.error}</span>
             </div>

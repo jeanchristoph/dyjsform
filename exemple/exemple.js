@@ -38,13 +38,12 @@ document.addEventListener('DOMContentLoaded', function() {
             'content': ''
         },
         {
-            'htmlElement': 'input',
-            'type': 'email',
-            'name': 'name_email',
-            'label': 'email',
-            'value': '',
-            'content': '',
-            'className': ''
+            'htmlElement': 'textarea',
+            'type': 'text',
+            'name': 'label',
+            'label': 'libellé',
+            'className' : 'mod_topweb_rgpd_form_label',
+            'attr': 'style="height:150px"'
         },
         {
             'htmlElement': 'input',
@@ -81,5 +80,4 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('DyJsForm.refreshForm', (data) => {
         console.log('Event Triggered:', data);
     });
-
 });
