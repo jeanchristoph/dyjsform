@@ -158,10 +158,10 @@ export default class JsonService {
     validate(json) {
         const validationResult = ValidatorService.maxCount(json);
         if (validationResult.valid) {
-            console.log("Validation réussie : Aucun conflit détecté.");
+            // console.log("Validation réussie : Aucun conflit détecté.");
             return { success: true, errors: null };
         } else {
-            console.log("Validation échouée :", validationResult);
+            console.log("Validation échouée :", validationResult.errors);
             return { success: false, errors: validationResult.errors };
         }
     }
