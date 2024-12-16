@@ -30,18 +30,15 @@ export default class ProxyService {
                         if ( !['symbol'].includes(propKey) && !['Array', 'Date'].includes(constructorName)) {
                             // Déclenche un événement après l'exécution de la méthode
                             const eventName = `${constructorName}.${propKey}`;
-                            if (this._debugMode){
-                                console.group(`[${formattedTime}] ${this._selector}.${constructorName}.${propKey}`);
-                            }
+                            this._debugMode && console.group(`[${formattedTime}] ${this._selector}.${constructorName}.${propKey}`);
+
                             // Vérifie si l'événement doit être dispatché, même si il n'est pas dans eventAliasMap
                             if (this._dispatchAllEvents || this._eventAliasMap[eventName]) {
                                 this.dispatchEvent(this._resolveAlias(eventName), { args, result });
-                                console.log('event triggered: ' + this._resolveAlias(eventName))
-                            }
-                            if (this._debugMode){
-                                console.groupEnd();
+                                this._debugMode && console.log('event triggered: ' + this._resolveAlias(eventName))
                             }
 
+                            this._debugMode && console.groupEnd();
                         }
 
                         return result;
