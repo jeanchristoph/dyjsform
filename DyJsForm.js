@@ -34,13 +34,20 @@ export default class DyJsForm {
      * @param {Object} options - Options de configuration.
      * @param {boolean} options.debug - Active le mode débogage.
      */
-    constructor(selector = '#dyjsform', {debug = false}) {
+    constructor(
+        selector = '#dyjsform', {
+        isOutputKeyValue = true,
+        debug = false}
+    ) {
 
         this._entity = [];
-        this._jsonService = new JsonService();
+        this._isOutputKeyValue = isOutputKeyValue;
+        this._jsonService = new JsonService(this._isOutputKeyValue);
         this._templateService = new TemplateService();
         this._selector = selector;
+
         this._errors = [];
+
 
         if (debug) {
             return new DebugService(this); // Retourne une instance proxy pour le débogage
@@ -128,7 +135,7 @@ export default class DyJsForm {
                 if (jsonData) {
                     this._jsonService
                         .addRow(this.entity)
-                        .loadReducedJson(jsonData); // besoin d'une premiere raw pour initialisé le json
+                        .loadOutputJson(jsonData); // besoin d'une premiere raw pour initialisé le json
                     this.refreshForm();
                 }
 
@@ -146,7 +153,7 @@ export default class DyJsForm {
         this._templateService
             .renderForm(this._selector)
             .renderRow(this._selector, this.entity, this._jsonService.json);
-        this.writeOutputJson();
+        this._jsonService.writeOutputJson(this._selector);
         this.initHandlers();
         return this;
     }
@@ -211,7 +218,7 @@ export default class DyJsForm {
             this._errors =  [];
             this.refreshForm();
         }
-        this.writeOutputJson()
+        this._jsonService.writeOutputJson(this._selector);
     }
 
 
@@ -233,11 +240,7 @@ export default class DyJsForm {
         return this;
     }
 
-// Fonction pour générer le JSON
-    writeOutputJson() {
-        document.querySelector(this._selector + ' .output').value = JSON.stringify(this._jsonService.outputJson, null);
-        return this;
-    }
+
 
 }
 
