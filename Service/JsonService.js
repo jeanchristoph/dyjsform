@@ -1,34 +1,15 @@
 import ValidatorService from "./ValidatorService.js";
 
 export default class JsonService {
-    constructor() {
+    constructor(isOutputKeyValue = true) {
         this._json = [];
-        this._outputJson = [];
-        // this._validatorService = new ValidatorService();
+        this._isOutputKeyValue = isOutputKeyValue;
+        this._keyValueJson = [];
     }
-
 
     get json() {
         //clonage profond pour éviter le passage par référence dans le json créé ensuite et les pbs d'updates
         return JSON.parse(JSON.stringify(this._json));
-    }
-
-
-    getJsonData(){
-        //clonage profond pour éviter le passage par référence dans le json créé ensuite et les pbs d'updates
-        return JSON.parse(
-            JSON.stringify(
-                // Créer un tableau filtré : pour enlever les boutons actions à l'interieur du tableau parent
-                this.removeAction(this.json)
-            )
-        );
-    }
-
-    removeAction(json) {
-        json.map(row =>
-            row.filter(field => !field.name.startsWith('dyjsform_action_'))
-        )
-        return json;
     }
 
     set json(json) {
@@ -40,11 +21,33 @@ export default class JsonService {
                 this._json = json;
                 break;
         }
-        this.outputJson = this.getJsonData();
+        this.keyValueJson = this.getJsonData();
     }
-    
 
+    get keyValueJson() {
+        return this._keyValueJson;
+    }
 
+    set keyValueJson(json) {
+        this._keyValueJson = this.reduceByNameValue(json);
+    }
+
+    removeAction(json) {
+        json.map(row =>
+            row.filter(field => !field.name.startsWith('dyjsform_action_'))
+        )
+        return json;
+    }
+
+    getJsonData(){
+        //clonage profond pour éviter le passage par référence dans le json créé ensuite et les pbs d'updates
+        return JSON.parse(
+            JSON.stringify(
+                // Créer un tableau filtré : pour enlever les boutons actions à l'interieur du tableau parent
+                this.removeAction(this.json)
+            )
+        );
+    }
 
     addRow (entity) {
         const updatedJson = this.json;
@@ -60,28 +63,6 @@ export default class JsonService {
         return this;
     }
 
-    get outputJson() {
-        return this._outputJson;
-    }
-
-    set outputJson(json) {
-        this._outputJson = this.reduceByNameValue(json);
-    }
-
-    isJsonString(str) {
-        try {
-            JSON.parse(str);
-        } catch (e) {
-            console.error(e)
-            return false;
-        }
-        return true;
-    }
-
-    jsonToStr(jsonObject){
-        return JSON.stringify(jsonObject, null, 2)
-    }
-
     strToJson(str) {
         try {
             return JSON.parse(str);
@@ -92,41 +73,51 @@ export default class JsonService {
     }
 
     reduceByNameValue (json){
-        var ReducedJson =[];
+        var reducedJson =[];
         for (const row of json){
             let rowJson = [];
             for (let field of row) {
                 rowJson.push( { [field['name']] : field['value'] });
             }
-            ReducedJson.push(rowJson);
+            reducedJson.push(rowJson);
         }
-        return ReducedJson;
+        return reducedJson;
     }
 
-    loadReducedJson(outputJson) {
+    loadOutputJson(outputJson) {
         let json = this.json;
+
+        if (!this._isOutputKeyValue){
+            this.json = outputJson;
+        } else {
+            this.json = this.convertKeyValueJson(outputJson, json);
+        }
+        return this;
+    }
+
+    convertKeyValueJson (KeyValueJson, jsonPattern) {
         // Vérifiez si json a plus de lignes que this._json
-        while (json.length < outputJson.length) {
+        while (jsonPattern.length < KeyValueJson.length) {
             // Ajoutez une copie de la dernière ligne de this._json avec les valeurs vides
-            const templateRow = json[json.length - 1].map(field => ({
+            const templateRow = jsonPattern[jsonPattern.length - 1].map(field => ({
                 ...field,
                 value: ''
             }));
-            json.push(templateRow);
+            jsonPattern.push(templateRow);
         }
 
         //Mettez à jour les valeurs à partir de json
-        const updatedJson = json.map((row, rowIndex) => {
+        const updatedJson = jsonPattern.map((row, rowIndex) => {
             return row.map((field, fieldIndex) => {
                 // Créez une copie de l'objet field avant de le modifier
                 const newField = { ...field };
 
                 if (!newField.name.startsWith('dyjsform_action_')) {
                     // Obtenez la première clé de l'objet (par exemple, "name_number")
-                    const fieldKey = Object.keys(outputJson[rowIndex][fieldIndex]);
+                    const fieldKey = Object.keys(KeyValueJson[rowIndex][fieldIndex]);
                     const outputJsonValue =
-                        Object.keys(outputJson[rowIndex][fieldIndex]).find(key => key === newField.name) ?
-                            outputJson[rowIndex][fieldIndex][newField.name] :
+                        Object.keys(KeyValueJson[rowIndex][fieldIndex]).find(key => key === newField.name) ?
+                            KeyValueJson[rowIndex][fieldIndex][newField.name] :
                             '';
 
                     // Assignez la valeur sans modifier l'objet original
@@ -138,8 +129,7 @@ export default class JsonService {
             });
         });
 
-        this.json = updatedJson;
-        return this;
+        return updatedJson;
     }
 
 
@@ -207,17 +197,22 @@ export default class JsonService {
 
 
     errorClean(json) {
+        //     json.map(row => row.map(entity => entity.error = ''));
+        //     return json;
         json = json.map(row =>
             row.map(entity => ({ ...entity, error: '' })) // Réinitialise les erreurs sans modifier les références
         );
         return json;
     }
 
-
-    // errorClean(json) {
-    //     json.map(row => row.map(entity => entity.error = ''));
-    //     return json;
-    // }
-
+    // Fonction pour générer le JSON
+    writeOutputJson(selector) {
+        let output = this.keyValueJson;
+        if (!this._isOutputKeyValue){
+            output = this.json;
+        }
+        document.querySelector(selector + ' .output').value = JSON.stringify(output, null);
+        return this;
+    }
 
 }
