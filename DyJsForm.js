@@ -44,16 +44,17 @@ export default class DyJsForm {
 
     ) {
 
+        this._options = {debugMode : debugMode, selector : selector};
+
         this._entity = [];
         this._isOutputKeyValue = isOutputKeyValue;
         this._jsonService = new JsonService(this._isOutputKeyValue);
-        this._templateService = new TemplateService();
+        this._templateService = new TemplateService(this._options);
         this._selector = selector;
-
         this._errors = [];
-        this._resizeObserverService = new ResizeObserverService(selector);
+        this._resizeObserverService = new ResizeObserverService(this._options);
 
-        return new ProxyService(this, {debugMode : debugMode, selector : selector, dispatchAllEvents : true}); // Retourne une instance proxy
+        return new ProxyService(this, this._options); // Retourne une instance proxy
     }
 
     /**
