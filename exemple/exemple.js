@@ -2,7 +2,7 @@ import DyJsForm from '../DyJsForm.js';
 
 // MODULE ADHESION
 document.addEventListener('DOMContentLoaded', function() {
-    let dyjsform = new DyJsForm('#dyjsform',{debug : false, isOutputKeyValue : true});
+    let dyjsform = new DyJsForm('#dyjsform',{debugMode : true, isOutputKeyValue : true});
     dyjsform.template ='classic' ;
     dyjsform.entity = [
         {
@@ -73,5 +73,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // dyjsform.init(json);
     dyjsform.init();
 // MODULE ADHESION FIN
+
+    // Définir un alias
+    // debugService.setEventAlias('DyJsForm.refreshForm', 'refresh');
+
+// Ajouter un écouteur pour l'alias
+    document.addEventListener('DyJsForm.refreshForm', (data) => {
+        console.log('Event Triggered:', data);
+    });
 
 });
