@@ -22,7 +22,7 @@ export default class TemplateService {
     }
 
     async loadTemplate(){
-        const templateIndex = await import('../Template'); // Assurez-vous d'importer la classe par défaut
+        const templateIndex = await import('../Template/index.js'); // Assurez-vous d'importer la classe par défaut
         // Assurez-vous d'importer la classe par défaut
 
         let template = new templateIndex[this._templateName]();
