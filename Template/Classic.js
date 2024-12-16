@@ -11,13 +11,14 @@ export class Classic {
             <div class="dyjsform_container"></div>
             <div  class="dyjsform_footer" class=" row form-group align-items-center">
                 <div class="col-md-3"></div>
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <button type="button" class="form-control btn btn-primary dyjsform_action_add">
                         <i class="fas fa-plus"></i> Ajouter
                     </button>
                 </div>
             </div>
-                <textarea rows="30" cols="150" name="${selector}[output]"
+<!--                <textarea rows="30" cols="150" name="${selector}[output]"-->
+                <textarea hidden name="${selector}[output]"
                        class="output"></textarea>
             `;
     }

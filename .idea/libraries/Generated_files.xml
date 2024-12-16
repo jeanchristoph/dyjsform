@@ -6,10 +6,12 @@
         <item url="file://$PROJECT_DIR$/DTO/OptionDTO.min.js" />
         <item url="file://$PROJECT_DIR$/DyJsForm.min.js" />
         <item url="file://$PROJECT_DIR$/Service/JsonService.min.js" />
+        <item url="file://$PROJECT_DIR$/Service/ProxyService.min.js" />
         <item url="file://$PROJECT_DIR$/Service/TemplateService.min.js" />
         <item url="file://$PROJECT_DIR$/Service/ValidatorService.min.js" />
         <item url="file://$PROJECT_DIR$/Template/Classic.min.js" />
         <item url="file://$PROJECT_DIR$/Template/index.min.js" />
+        <item url="file://$PROJECT_DIR$/config/eventAliasMap.min.js" />
         <item url="file://$PROJECT_DIR$/exemple/exemple.min.js" />
         <item url="file://$PROJECT_DIR$/formEvents.min.js" />
       </sourceFilesUrls>
@@ -18,13 +20,14 @@
       <root url="file://$PROJECT_DIR$/DTO/EntityDTO.min.js" />
       <root url="file://$PROJECT_DIR$/DTO/OptionDTO.min.js" />
       <root url="file://$PROJECT_DIR$/DyJsForm.min.js" />
-      <root url="file://$PROJECT_DIR$/Service/DebugService.min.js" />
       <root url="file://$PROJECT_DIR$/Service/JsonService.min.js" />
+      <root url="file://$PROJECT_DIR$/Service/ProxyService.min.js" />
       <root url="file://$PROJECT_DIR$/Service/TemplateService.min.js" />
       <root url="file://$PROJECT_DIR$/Service/ValidatorService.min.js" />
       <root url="file://$PROJECT_DIR$/Template/Classic.min.js" />
       <root url="file://$PROJECT_DIR$/Template/Test.min.js" />
       <root url="file://$PROJECT_DIR$/Template/index.min.js" />
+      <root url="file://$PROJECT_DIR$/config/eventAliasMap.min.js" />
       <root url="file://$PROJECT_DIR$/exemple/exemple.min.js" />
       <root url="file://$PROJECT_DIR$/formEvents.min.js" />
     </CLASSES>
