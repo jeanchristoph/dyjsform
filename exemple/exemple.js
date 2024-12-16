@@ -2,7 +2,10 @@ import DyJsForm from '../DyJsForm.js';
 
 // MODULE ADHESION
 document.addEventListener('DOMContentLoaded', function() {
-    let dyjsform = new DyJsForm('#dyjsform',{debugMode : true, isOutputKeyValue : true});
+    let dyjsform = new DyJsForm('#dyjsform',{
+        debugMode : false,
+        isOutputKeyValue : true
+    });
     dyjsform.template ='classic' ;
     dyjsform.entity = [
         {
