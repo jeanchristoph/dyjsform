@@ -1,11 +1,14 @@
-export default class ResizeObserverService {
-    constructor(selector) {
-        this.targetElement = document.querySelector(selector);
-        if (!this.targetElement) {
-            throw new Error(`Element with selector ${selector} not found.`);
-        }
-        this._inputResizedTimeout = 0;
+import EventService from "./EventService.js";
 
+export default class ResizeObserverService {
+    constructor(options) {
+        this._selector = options.selector || '#dyjsform';
+        this.targetElement = document.querySelector(this._selector);
+        if (!this.targetElement) {
+            throw new Error(`Element with selector ${this._selector} not found.`);
+        }
+        this._eventService = new EventService(options);
+        this._inputResizedTimeout = 0;
         this.observerForNewElements = new MutationObserver(() => {
 
             this.targetElement.querySelectorAll('.dyjsform_input').forEach((targetInput) => {
@@ -14,7 +17,7 @@ export default class ResizeObserverService {
                     const observer = new MutationObserver(() => {
                         clearTimeout(this._inputResizedTimeout);
                         this._inputResizedTimeout = setTimeout(()=>{
-                            this.inputResized(selector, targetInput);
+                            this.inputResized(targetInput);
                         },100)
                     });
 
@@ -37,22 +40,15 @@ export default class ResizeObserverService {
     }
 
     // Méthode pour émettre un événement personnalisé et afficher un log
-    inputResized(selector, targetInput) {
+    inputResized(targetInput) {
         // Créer un événement personnalisé
-        const eventName = `${selector}.ResizeObserverService.inputResized`;
-        // const eventName = `${targetElementSelector}.ResizeObserverService.inputResized.${targetInput.name}`;
-        const event = new CustomEvent(eventName, {
-            detail: {
-                element: targetInput,
-                message: 'Element resized'
-            }
+        const eventName = `ResizeObserverService.inputResized`;
+
+        this._eventService.dispatchEvent(eventName, {
+            element: targetInput,
+            message: 'Element resized'
         });
 
-        // Déclencher l'événement
-        targetInput.dispatchEvent(event);
-
-        // Afficher le log dans la console
-        console.log(`Event triggered: ${eventName}`);
     }
 
     // Méthode pour déconnecter l'observateur si nécessaire
