@@ -25,6 +25,7 @@ import TemplateService from './Service/TemplateService.js';
 import ProxyService from './Service/ProxyService.js';
 import EntityDTO from './DTO/EntityDTO.js';
 import OptionDTO from './DTO/OptionDTO.js';
+import ResizeObserverService from "./Service/ResizeObserverService.js";
 
 export default class DyJsForm {
 
@@ -50,8 +51,9 @@ export default class DyJsForm {
         this._selector = selector;
 
         this._errors = [];
+        this._resizeObserverService = new ResizeObserverService(selector);
 
-        return new ProxyService(this, {debugMode : debugMode, selector : selector, dispatchAllEvents : false}); // Retourne une instance proxy
+        return new ProxyService(this, {debugMode : debugMode, selector : selector, dispatchAllEvents : true}); // Retourne une instance proxy
     }
 
     /**
