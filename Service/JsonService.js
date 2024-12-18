@@ -72,17 +72,15 @@ export default class JsonService {
         }
     }
 
-    reduceByNameValue (json){
-        var reducedJson =[];
-        for (const row of json){
-            let rowJson = [];
-            for (let field of row) {
-                rowJson.push( { [field['name']] : field['value'] });
-            }
-            reducedJson.push(rowJson);
-        }
-        return reducedJson;
+    reduceByNameValue(json) {
+        return json.map(row =>
+            row
+                .filter(field => !field['name'].startsWith('dyjsform_action_'))
+                .map(field => ({ [field['name']]: field['value'] }))
+        );
     }
+
+
 
     loadOutputJson(outputJson) {
         let json = this.json;
