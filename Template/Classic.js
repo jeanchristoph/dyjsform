@@ -41,6 +41,8 @@ export class Classic {
                 // content += `<option ${selected} value="${option.value}" ${maxCount}>${option.name}</option>`;
                 content += `<option ${selected} value="${option.value}">${option.name}</option>`;
             })
+        } else if (field.htmlElement === 'textarea'){
+            content = field.value ? `${field.value}` : '';
         } else {
             content = field.content ? `${field.content}` : '';
         }
