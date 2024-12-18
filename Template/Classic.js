@@ -7,6 +7,7 @@ export class Classic {
         return `<div>`;
     }
     getForm(selector) {
+        const outputName = selector.replace('#', '');
         return `
             <div class="dyjsform_container"></div>
             <div  class="dyjsform_footer" class=" row form-group align-items-center">
@@ -17,8 +18,8 @@ export class Classic {
                     </button>
                 </div>
             </div>
-<!--                <textarea rows="30" cols="150" name="${selector}[output]"-->
-                <textarea hidden name="${selector}[output]"
+<!--                <textarea rows="30" cols="150" name="${outputName}[output]"-->
+                <textarea hidden name="${outputName}[output]"
                        class="output"></textarea>
             `;
     }
