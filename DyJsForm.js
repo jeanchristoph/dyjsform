@@ -125,7 +125,7 @@ export default class DyJsForm {
     }
 
     init (json = '') {
-        const jsonHtml = document.querySelector(this._selector).getAttribute('data-json');
+        const jsonHtml = document.querySelector(this._selector).getAttribute('data-input');
         const jsonData = json !== '' ? JSON.parse(json) : jsonHtml !== '' ? JSON.parse(jsonHtml) : null;// JS data > HTML data
         this._templateService.loadTemplate().then(
             () => {
