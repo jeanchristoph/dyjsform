@@ -24,7 +24,6 @@ export default class EventService {
                 bubbles: true, // Permet à l'événement de remonter dans la hiérarchie DOM
                 cancelable: true // L'événement peut être annulé
             });
-console.log(customEvent);
             // Déclencher l'événement sur le document
             document.dispatchEvent(customEvent);
             this._debugMode && console.log('event triggered: ' + this._resolveAlias(eventName))
