@@ -38,7 +38,7 @@ export default class DyJsForm {
     constructor(
         selector = '#dyjsform',
         {
-            isOutputKeyValue = true,
+            rawOutput = false,
             debugMode = false
         }  = {}
 
@@ -47,8 +47,8 @@ export default class DyJsForm {
         this._options = {debugMode : debugMode, selector : selector};
 
         this._entity = [];
-        this._isOutputKeyValue = isOutputKeyValue;
-        this._jsonService = new JsonService(this._isOutputKeyValue);
+        this._rawOutput = rawOutput;
+        this._jsonService = new JsonService(this._rawOutput);
         this._templateService = new TemplateService(this._options);
         this._selector = selector;
         this._errors = [];

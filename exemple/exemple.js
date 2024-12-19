@@ -4,7 +4,7 @@ import DyJsForm from '../DyJsForm.js';
 document.addEventListener('DOMContentLoaded', function() {
     let dyjsform = new DyJsForm('#dyjsform',{
         debugMode : false,
-        isOutputKeyValue : true
+        rawOutput : false
     });
     dyjsform.template ='classic' ;
     dyjsform.entity = [
@@ -67,10 +67,9 @@ document.addEventListener('DOMContentLoaded', function() {
         },
     ];
     // const json = `
-    // [[{"type_adhesion":"newsletter"},{"name_text":"test"},{"name_number":"1"},{"name_email":"malaval@topdata.fr"},
-    //     {"name_password":"pass"}],[{"type_adhesion":""},{"name_text":""},{"name_number":"2"},{"name_email":""},
-    //     {"name_password":""}],[{"type_adhesion":"conditions_generales"},{"name_text":""},{"name_number":""},
-    //     {"name_email":""},{"name_password":"password"}]]
+    // [{"type_adhesion":"bac","name_text":"test","name_number":"1","label":"label","name_password":"pass"},
+    //         {"type_adhesion":"newsletter","name_text":"","name_number":"","label":"","name_password":""},
+    //         {"type_adhesion":"conditions_generales","name_text":"z","name_number":"3","label":"label3","name_password":"pass3"}]
     //     `
     // dyjsform.init(json);
     dyjsform.init();
