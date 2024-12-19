@@ -1,9 +1,9 @@
 import ValidatorService from "./ValidatorService.js";
 
 export default class JsonService {
-    constructor(isOutputKeyValue = true) {
+    constructor(rawOutput = true) {
         this._json = [];
-        this._isOutputKeyValue = isOutputKeyValue;
+        this._rawOutput = rawOutput;
         this._keyValueJson = [];
     }
 
@@ -73,6 +73,11 @@ export default class JsonService {
     }
 
     reduceByNameValue(json) {
+        const filteredData = this._filterAndTransform(json); // Étape 1
+        return this._reduceToFlatObjects(filteredData);      // Étape 2
+    }
+
+    _filterAndTransform(json) {
         return json.map(row =>
             row
                 .filter(field => !field['name'].startsWith('dyjsform_action_'))
@@ -80,12 +85,17 @@ export default class JsonService {
         );
     }
 
+    _reduceToFlatObjects(filteredData) {
+        return filteredData.map(row =>
+            row.reduce((acc, obj) => Object.assign(acc, obj), {})
+        );
+    }
 
 
     loadOutputJson(outputJson) {
         let json = this.json;
 
-        if (!this._isOutputKeyValue){
+        if (this._rawOutput){
             this.json = outputJson;
         } else {
             this.json = this.convertKeyValueJson(outputJson, json);
@@ -93,42 +103,35 @@ export default class JsonService {
         return this;
     }
 
-    convertKeyValueJson (KeyValueJson, jsonPattern) {
-        // Vérifiez si json a plus de lignes que this._json
-        while (jsonPattern.length < KeyValueJson.length) {
-            // Ajoutez une copie de la dernière ligne de this._json avec les valeurs vides
-            const templateRow = jsonPattern[jsonPattern.length - 1].map(field => ({
+    convertKeyValueJson(flatKeyValueJson, jsonPattern) {
+        // Étape 1 : Ajout de lignes dynamiques si nécessaire
+        while (flatKeyValueJson.length > jsonPattern.length) {
+            const lastRow = jsonPattern[jsonPattern.length - 1];
+            const newRow = lastRow.map(field => ({
                 ...field,
-                value: ''
+                value: '' // Réinitialiser les valeurs
             }));
-            jsonPattern.push(templateRow);
+            jsonPattern.push(newRow);
         }
 
-        //Mettez à jour les valeurs à partir de json
-        const updatedJson = jsonPattern.map((row, rowIndex) => {
-            return row.map((field, fieldIndex) => {
-                // Créez une copie de l'objet field avant de le modifier
+        // Étape 2 : Mise à jour des champs avec les valeurs de flatKeyValueJson
+        return flatKeyValueJson.map((flatRow, rowIndex) => {
+            // Si le modèle contient moins de champs que nécessaire, on le complète dynamiquement
+            const patternRow = jsonPattern[rowIndex] || [];
+            return patternRow.map(field => {
+                // Copier chaque champ pour éviter de modifier directement l'objet original
                 const newField = { ...field };
 
+                // Assigner la valeur correspondante à partir du JSON plat
                 if (!newField.name.startsWith('dyjsform_action_')) {
-                    // Obtenez la première clé de l'objet (par exemple, "name_number")
-                    const fieldKey = Object.keys(KeyValueJson[rowIndex][fieldIndex]);
-                    const outputJsonValue =
-                        Object.keys(KeyValueJson[rowIndex][fieldIndex]).find(key => key === newField.name) ?
-                            KeyValueJson[rowIndex][fieldIndex][newField.name] :
-                            '';
-
-                    // Assignez la valeur sans modifier l'objet original
-                    newField.value = outputJsonValue;
+                    newField.value = flatRow[newField.name] || '';
                 }
 
-                // Retourne la copie modifiée, sans toucher à l'original
-                return newField;
+                return newField; // Retourne le champ mis à jour
             });
         });
-
-        return updatedJson;
     }
+
 
 
     updateJsonByField(rowIndex,fieldName, value) {
@@ -206,7 +209,7 @@ export default class JsonService {
     // Fonction pour générer le JSON
     writeOutputJson(selector) {
         let output = this.keyValueJson;
-        if (!this._isOutputKeyValue){
+        if (this._rawOutput){
             output = this.json;
         }
         document.querySelector(selector + ' .output').value = JSON.stringify(output, null);
