@@ -227,7 +227,7 @@ export default class DyJsForm {
     async handleInputKeyup () {
         // ecoute des inputs
         for (const entity of this.getEntityData()){
-            const elements = document.querySelectorAll('.' + entity.name);
+            const elements = document.querySelectorAll(this._selector + ' .' + entity.name);
             if (elements.length > 0) {
                 elements.forEach((element) => {
                     element.addEventListener('keyup',  (event) => {
