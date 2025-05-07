@@ -182,7 +182,7 @@ export default class DyJsForm {
     }
 
     addHandler() {
-        document.querySelectorAll('.dyjsform_action_add').forEach((element) => {
+        document.querySelectorAll(this._selector + ' .dyjsform_action_add').forEach((element) => {
             element.addEventListener('click', (event) => {
                 event.preventDefault();
                 this._jsonService.addRow(this.entity);
@@ -192,7 +192,7 @@ export default class DyJsForm {
     }
 
     deleteHandler(){
-        document.querySelectorAll('.dyjsform_action_remove').forEach((element) => {
+        document.querySelectorAll(this._selector + ' .dyjsform_action_remove').forEach((element) => {
             element.addEventListener('click', (event) => {
                 // Récupérer l'attribut data-row de l'élément cible
                 const rowNumber = event.target.getAttribute('data-row');
