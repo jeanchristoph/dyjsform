@@ -26,7 +26,7 @@ export class Classic {
 
     getField(field,rowIndex, BSColumnWidth) {
         const type = field.type ? `type="${field.type}"` : '';
-        const value = field.value ? `value="${this._escapeHtml(field.value)}"` : '';
+        const value = field.htmlElement !== 'textarea' && field.value ? `value="${this._escapeHtml(field.value)}"` : '';
         let content = '';
         const className = field.className ? `${field.className}` : '';
         const attr = field.attr ? `${field.attr}` : '';
