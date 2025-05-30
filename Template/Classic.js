@@ -26,7 +26,7 @@ export class Classic {
 
     getField(field,rowIndex, BSColumnWidth) {
         const type = field.type ? `type="${field.type}"` : '';
-        const value = field.value ? `value="${field.value}"` : '';
+        const value = field.value ? `value="${this._escapeHtml(field.value)}"` : '';
         let content = '';
         const className = field.className ? `${field.className}` : '';
         const attr = field.attr ? `${field.attr}` : '';
@@ -42,7 +42,7 @@ export class Classic {
                 content += `<option ${selected} value="${option.value}">${option.name}</option>`;
             })
         } else if (field.htmlElement === 'textarea'){
-            content = field.value ? `${field.value}` : '';
+            content = field.value ? `${this._escapeHtml(field.value)}` : '';
         } else {
             content = field.content ? `${field.content}` : '';
         }
@@ -61,5 +61,22 @@ export class Classic {
 
     }
 
+    _escapeHtml(str) {
+        return str
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    // _unescapeHtml(str) {
+    //     return str
+    //         .replace(/&lt;/g, '<')
+    //         .replace(/&gt;/g, '>')
+    //         .replace(/&quot;/g, '"')
+    //         .replace(/&#039;/g, "'")
+    //         .replace(/&amp;/g, '&');
+    // }
 
 }
