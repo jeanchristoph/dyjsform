@@ -32,7 +32,11 @@ export default class TemplateService {
 
 
     renderForm (selector) {
-        document.querySelector(selector).innerHTML = this._template.getForm(selector);
+        const oldEl = document.querySelector(selector);
+        const wrapper = document.createElement('div');
+        wrapper.id = selector.replace('#', '');
+        wrapper.innerHTML = this._template.getForm(selector);
+        oldEl.parentNode.replaceChild(wrapper, oldEl);
         return this;
     }
 
