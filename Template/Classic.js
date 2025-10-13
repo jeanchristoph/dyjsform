@@ -20,7 +20,7 @@ export class Classic {
             `;
     }
 
-    getField(field, rowIndex, totalFieldsCount) {
+    getField(field, rowIndex) {
         const type = field.type ? `type="${field.type}"` : '';
         const value = field.htmlElement !== 'textarea' && field.value ? `value="${this._escapeHtml(field.value)}"` : '';
         let content = '';
@@ -30,9 +30,6 @@ export class Classic {
 
         // Calcul de la largeur basée sur flex-basis pour simuler les 12 colonnes
         const flex = field.flex || 1;
-        const totalFlex = totalFieldsCount;
-        const flexBasis = `${(flex / totalFlex) * 100}%`;
-        const minWidth = '200px'; // Pour éviter des champs trop étroits
 
         if (field.htmlElement === 'select' && field.options){
             content += `<option></option>`;
@@ -49,7 +46,7 @@ export class Classic {
             content = field.content ? `${field.content}` : '';
         }
 
-        return `<div class="form-group" style="flex: ${flex} 0 ${flexBasis}; min-width: ${minWidth};">
+        return `<div class="form-group" style="flex: ${flex}">
                 <div class="dyjsform_label">${field.label === '' ? '&nbsp;' : field.label}</div>
                 <div class="dyjsform_input_container">
                     <${field.htmlElement} ${name} class="form-control dyjsform_input ${field.name} ${className}" 

@@ -50,12 +50,13 @@ export default class TemplateService {
         let rows = json;
         let HtmlForm = containerContent;
 
-        HtmlForm += template.getBegin();
         // for (let row of rows ) {
         rows.forEach((row, rowIndex) => {
+            HtmlForm += template.getBegin();
             HtmlForm +=  this.fieldRender(entity, row, rowIndex);
-        });
         HtmlForm += template.getEnd();
+        });
+
         document.querySelector(selector + ' .dyjsform_container').innerHTML = HtmlForm; // Utiliser += pour ajouter le contenu
         return this;
 
@@ -88,7 +89,7 @@ export default class TemplateService {
             cols[decimals[i].index]++;
         }
 
-        entities.forEach((e, i) => e.bootstrapCol = cols[i]);
+        entities.forEach((e, i) => e.bsColSize = cols[i]);
         return entities;
     }
 
