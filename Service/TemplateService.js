@@ -29,6 +29,7 @@ export default class TemplateService {
         let template = new templateIndex[this._templateName]();
         this._template = template
 
+
         return template;
     }
 
@@ -60,25 +61,44 @@ export default class TemplateService {
 
     }
 
-    calcBootstrapCols(flexArray) {
-        const totalFlex = flexArray.reduce((a, b) => a + b, 0);
-        let cols = flexArray.map(f => Math.round((f / totalFlex) * 12));
+    assignBootstrapCols(entities) {
+        const flexValues = entities.map(e => e.flex || 1);
+        const totalFlex = flexValues.reduce((sum, f) => sum + f, 0);
 
-        // Ajustement si la somme n'est pas exactement 12
-        let diff = 12 - cols.reduce((a,b) => a + b, 0);
-        if (diff !== 0) {
-            // On ajoute ou retire la différence au dernier élément
-            cols[cols.length - 1] += diff;
+        // Calculer les valeurs exactes (avec décimales)
+        const exactCols = flexValues.map(f => (f / totalFlex) * 12);
+
+        // Calculer les colonnes initiales avec Math.floor
+        let cols = exactCols.map(c => Math.floor(c));
+
+        // Calculer les décimales restantes pour chaque colonne
+        const decimals = exactCols.map((exact, i) => ({
+            index: i,
+            decimal: exact - cols[i],
+        }));
+
+        // Calculer combien de colonnes restent à distribuer
+        let remainingCols = 12 - cols.reduce((sum, c) => sum + c, 0);
+
+        // Trier par décimales décroissantes
+        decimals.sort((a, b) => b.decimal - a.decimal);
+
+        // Distribuer les colonnes restantes aux éléments avec les plus grandes décimales
+        for(let i = 0; i < remainingCols; i++) {
+            cols[decimals[i].index]++;
         }
 
-        return cols;
+        entities.forEach((e, i) => e.bootstrapCol = cols[i]);
+        return entities;
     }
+
 
 
     // Fonction pour créer une entity dans le formulaire Bootstrap 5
     fieldRender(entity, row, rowIndex) {
         const totalFieldsCount = entity.length;
         const template = this._template;
+        row = this.assignBootstrapCols(row)
         let Html = '';
         for (let field of row) {
             Html += template.getField(field,rowIndex, totalFieldsCount );
