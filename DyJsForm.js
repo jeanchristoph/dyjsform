@@ -20,12 +20,26 @@
 //TO DO: ajouter les bulles : tippyjs ?-> Sort du périmetre
 
 
-import JsonService from './Service/JsonService.js';
-import TemplateService from './Service/TemplateService.js';
-import ProxyService from './Service/ProxyService.js';
-import EntityDTO from './DTO/EntityDTO.js';
-import OptionDTO from './DTO/OptionDTO.js';
-import ResizeObserverService from "./Service/ResizeObserverService.js";
+async function importWithTimestamp(path) {
+    const timestamp = Date.now();
+    return import(`${path}?v=${timestamp}`).then(module => module.default);
+}
+
+const [
+    JsonService,
+    TemplateService,
+    ProxyService,
+    EntityDTO,
+    OptionDTO,
+    ResizeObserverService
+] = await Promise.all([
+    importWithTimestamp('./Service/JsonService.js'),
+    importWithTimestamp('./Service/TemplateService.js'),
+    importWithTimestamp('./Service/ProxyService.js'),
+    importWithTimestamp('./DTO/EntityDTO.js'),
+    importWithTimestamp('./DTO/OptionDTO.js'),
+    importWithTimestamp('./Service/ResizeObserverService.js')
+]);
 
 export default class DyJsForm {
 
@@ -116,6 +130,8 @@ export default class DyJsForm {
 
 
 
+
+
     get selector() {
         return this._selector;
     }
@@ -125,6 +141,7 @@ export default class DyJsForm {
     }
 
     init (json = '') {
+
         const jsonHtml = document.querySelector(this._selector).value;
         const jsonData = json !== '' ? JSON.parse(json) : jsonHtml !== '' ? JSON.parse(jsonHtml) : null;// JS data > HTML data
         this._templateService.loadTemplate().then(
@@ -242,6 +259,14 @@ export default class DyJsForm {
         return this;
     }
 
+
+    set template(value) {
+        this._templateService.templateName = value;
+    }
+
+    get template() {
+        return this._templateService.templateName;
+    }
 
 
 }
