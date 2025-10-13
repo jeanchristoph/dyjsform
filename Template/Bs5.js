@@ -1,7 +1,7 @@
-export class Classic {
+export class Bs5 {
 
     getBegin(){
-        return `<div class="dyjsform_entity">`;
+        return `<div class="row form-group align-items-center dyjsform_entity">`;
     }
     getEnd(){
         return `</div>`;
@@ -10,11 +10,13 @@ export class Classic {
         const outputName = selector.replace('#', '');
         return `
             <div class="dyjsform_container"></div>
-            <div class="dyjsform_footer">
-                <button type="button" class="btn btn-primary dyjsform_action_add">
+            <div class="dyjsform_footer row form-group align-items-center">
+                <div class="col-12">
+                    <button type="button" class="form-control btn btn-primary dyjsform_action_add">
                         <i class="fas fa-plus"></i> Ajouter
                     </button>
                 </div>
+            </div>
                 <textarea hidden name="${outputName}[output]"
                        class="output"></textarea>
             `;
@@ -28,11 +30,10 @@ export class Classic {
         const attr = field.attr ? `${field.attr}` : '';
         const name = !field.name.startsWith('dyjsform_action_') ? `name="dyjsform[${field.name}_${rowIndex}]"` :  '';
 
-        // Calcul de la largeur basée sur flex-basis pour simuler les 12 colonnes
+        // Calcul de la largeur Bootstrap en fonction de flex et du nombre total de champs
         const flex = field.flex || 1;
-        const totalFlex = totalFieldsCount;
-        const flexBasis = `${(flex / totalFlex) * 100}%`;
-        const minWidth = '200px'; // Pour éviter des champs trop étroits
+        const totalFlex = totalFieldsCount; // Si tous les champs ont flex: 1, c'est équivalent au nombre de champs
+        const BSColumnWidth = Math.min(Math.round((flex * 12) / totalFieldsCount), 12);
 
         if (field.htmlElement === 'select' && field.options){
             content += `<option></option>`;
@@ -42,69 +43,25 @@ export class Classic {
                 let selected= field.value === option.value ? 'selected' : '';
                 // content += `<option ${selected} value="${option.value}" ${maxCount}>${option.name}</option>`;
                 content += `<option ${selected} value="${option.value}">${option.name}</option>`;
-            });
+            })
         } else if (field.htmlElement === 'textarea'){
             content = field.value ? `${this._escapeHtml(field.value)}` : '';
         } else {
             content = field.content ? `${field.content}` : '';
         }
-
-        return `<div class="form-group" style="flex: ${flex} 0 ${flexBasis}; min-width: ${minWidth};">
-                <div class="dyjsform_label">${field.label === '' ? '&nbsp;' : field.label}</div>
-                <div class="dyjsform_input_container">
-                    <${field.htmlElement} ${name} class="form-control dyjsform_input ${field.name} ${className}" 
-                        ${attr} ${type} ${value} data-row="${rowIndex}" data-name="${field.name}">${content}</${field.htmlElement}>
+        return `<div class="form-group col-md-${BSColumnWidth}">
+            <div class="col-md-12">${field.label === '' ? '&nbsp;' : field.label}</div>
+            <div class="col-md-12">
+                <${field.htmlElement} ${name} class="form-control dyjsform_input ${field.name} ${className}" ${attr} ${type} ${value} 
+                data-row="${rowIndex}" data-name="${field.name}">${content}</${field.htmlElement}>
                 <span class="text-danger djf_error">${field.error}</span>
             </div>
         </div>`;
     }
 
     getCss() {
-        return `
-            .dyjsform_container {
-                display: flex;
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .dyjsform_entity {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 1rem;
-                align-items: flex-start;
-                width: 100%;
-                padding: 1rem;
-                border-bottom: 1px solid #dee2e6;
-            }
-            
-            .dyjsform_field {
-                min-width: 200px;
-            }
-            
-            .dyjsform_label {
-                margin-bottom: 0.5rem;
-            }
-            
-            .dyjsform_input_container {
-                width: 100%;
-            }
-            
-            .dyjsform_input {
-                width: 100%;
-                margin-bottom: 0.5rem;
-            }
-            
-            .dyjsform_footer {
-                display: flex;
-                justify-content: flex-end;
-                margin-top: 1rem;
-            }
-            
-            .djf_error {
-                display: block;
-                font-size: 0.875rem;
-            }
-        `;
+        return ``;
+
     }
 
     _escapeHtml(str) {
