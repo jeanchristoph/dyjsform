@@ -26,7 +26,7 @@ export default class EntityDTO {
         this.maxCount = maxCount || ''; // maxCount
         this.options = Array.isArray(options) ? options.map(opt => new OptionDTO(opt)) : []; // Liste d'options, chaque option est une instance de OptionDTO
         this.error = error || ''; // L'erreur remontée par ValidatorService
-        this.flex = flex || 1; // Valeur par défaut à 1 si non spécifié
+        this.flex = parseInt(flex, 10) || 1; // Valeur par défaut à 1 si non spécifié
     }
 
     /**
