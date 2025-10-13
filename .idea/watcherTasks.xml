@@ -3,7 +3,6 @@
   <component name="ProjectTasksOptions">
     <enabled-global>
       <option value="terser" />
-      <option value="yuicompressor-2.4.8 css" />
     </enabled-global>
   </component>
 </project>
