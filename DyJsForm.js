@@ -14,16 +14,10 @@
 // TODO: Ajouter un moyen simple de pouvoir manipuler des row et des colonnes pour que l'utilisateur puisse faire des traitements apres un evenement
 // TODO: Permettre de pouvoir ajouter des fonction de vérificatiob a la volé dans le JSon avec passage d'un arguement
 
-
-
 //TO DO: ajouter librairie de validation ? just-validate, validate.js -> Sort du périmetre
 //TO DO: ajouter les bulles : tippyjs ?-> Sort du périmetre
 
-
-async function importWithTimestamp(path) {
-    const timestamp = Date.now();
-    return import(`${path}?v=${timestamp}`).then(module => module.default);
-}
+import ImportService from './Service/ImportService.js';
 
 const [
     JsonService,
@@ -32,14 +26,15 @@ const [
     EntityDTO,
     OptionDTO,
     ResizeObserverService
-] = await Promise.all([
-    importWithTimestamp('./Service/JsonService.js'),
-    importWithTimestamp('./Service/TemplateService.js'),
-    importWithTimestamp('./Service/ProxyService.js'),
-    importWithTimestamp('./DTO/EntityDTO.js'),
-    importWithTimestamp('./DTO/OptionDTO.js'),
-    importWithTimestamp('./Service/ResizeObserverService.js')
-]);
+] = await ImportService.importMultiple([
+        './Service/JsonService.js',
+        './Service/TemplateService.js',
+        './Service/ProxyService.js',
+        './DTO/EntityDTO.js',
+        './DTO/OptionDTO.js',
+        './Service/ResizeObserverService.js'
+    ]
+);
 
 export default class DyJsForm {
 

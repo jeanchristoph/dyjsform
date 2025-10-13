@@ -1,12 +1,8 @@
-const timestamp = Date.now();
+import ImportService from './Service/ImportService.js';
 
-async function importTemplate(name) {
-    return import(`./${name}.js?v=${timestamp}`).then(module => module[name]);
-}
-
-const [Classic, Bs5] = await Promise.all([
-    importTemplate('Classic'),
-    importTemplate('Bs5')
+const [Classic, Bs5] = await ImportService.importMultiple([
+    './Classic.js',
+    './Bs5.js',
 ]);
 
 export { Classic, Bs5 };
