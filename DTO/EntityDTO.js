@@ -14,7 +14,7 @@ export default class EntityDTO {
      * @param {string} param.maxCount - maxCount de l'élément.
      * @param {Array} param.options - Liste des options de l'élément (si applicable).
      */
-    constructor({htmlElement, type, name, label, value, content, className, attr, maxCount, options, error}) {
+    constructor({htmlElement, type, name, label, value, content, className, attr, maxCount, options, error, flex}) {
         this.htmlElement = htmlElement || ''; // Type de l'élément HTML (e.g., 'select')
         this.type = type || ''; // Type additionnel (si applicable)
         this.name = name || ''; // Nom de l'élément
@@ -26,6 +26,7 @@ export default class EntityDTO {
         this.maxCount = maxCount || ''; // maxCount
         this.options = Array.isArray(options) ? options.map(opt => new OptionDTO(opt)) : []; // Liste d'options, chaque option est une instance de OptionDTO
         this.error = error || ''; // L'erreur remontée par ValidatorService
+        this.flex = flex || 1; // Valeur par défaut à 1 si non spécifié
     }
 
     /**
@@ -44,7 +45,8 @@ export default class EntityDTO {
             attr: this.attr,
             maxCount: this.maxCount,
             options: this.options, // Inclut les options sous forme d'un tableau d'objets OptionDTO
-            error: this.error // Inclut les options sous forme d'un tableau d'objets OptionDTO
+            error: this.error,// Inclut les options sous forme d'un tableau d'objets OptionDTO
+            flex: this.flex
         };
     }
 }
