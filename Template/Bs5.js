@@ -22,18 +22,13 @@ export class Bs5 {
             `;
     }
 
-    getField(field, rowIndex, totalFieldsCount) {
+    getField(field, rowIndex) {
         const type = field.type ? `type="${field.type}"` : '';
         const value = field.htmlElement !== 'textarea' && field.value ? `value="${this._escapeHtml(field.value)}"` : '';
         let content = '';
         const className = field.className ? `${field.className}` : '';
         const attr = field.attr ? `${field.attr}` : '';
         const name = !field.name.startsWith('dyjsform_action_') ? `name="dyjsform[${field.name}_${rowIndex}]"` :  '';
-
-        // Calcul de la largeur Bootstrap en fonction de flex et du nombre total de champs
-        const flex = field.flex || 1;
-        const totalFlex = totalFieldsCount; // Si tous les champs ont flex: 1, c'est équivalent au nombre de champs
-        const BSColumnWidth = Math.min(Math.round((flex * 12) / totalFieldsCount), 12);
 
         if (field.htmlElement === 'select' && field.options){
             content += `<option></option>`;
@@ -49,7 +44,7 @@ export class Bs5 {
         } else {
             content = field.content ? `${field.content}` : '';
         }
-        return `<div class="form-group col-md-${BSColumnWidth}">
+        return `<div class="form-group col-md-${field.bsColSize}">
             <div class="col-md-12">${field.label === '' ? '&nbsp;' : field.label}</div>
             <div class="col-md-12">
                 <${field.htmlElement} ${name} class="form-control dyjsform_input ${field.name} ${className}" ${attr} ${type} ${value} 
