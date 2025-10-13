@@ -3,68 +3,38 @@
     <properties>
       <sourceFilesUrls>
         <item url="file://$PROJECT_DIR$/DTO/EntityDTO.min.js" />
-        <item url="file://$PROJECT_DIR$/DTO/EntityDTO.min.min.js" />
         <item url="file://$PROJECT_DIR$/DTO/OptionDTO.min.js" />
-        <item url="file://$PROJECT_DIR$/DTO/OptionDTO.min.min.js" />
         <item url="file://$PROJECT_DIR$/DyJsForm.min.js" />
-        <item url="file://$PROJECT_DIR$/Service/DebugService.min.js" />
-        <item url="file://$PROJECT_DIR$/Service/DebugService.min.min.js" />
         <item url="file://$PROJECT_DIR$/Service/EventService.min.js" />
-        <item url="file://$PROJECT_DIR$/Service/EventService.min.min.js" />
+        <item url="file://$PROJECT_DIR$/Service/ImportService.min.js" />
         <item url="file://$PROJECT_DIR$/Service/JsonService.min.js" />
-        <item url="file://$PROJECT_DIR$/Service/JsonService.min.min.js" />
         <item url="file://$PROJECT_DIR$/Service/ProxyService.min.js" />
-        <item url="file://$PROJECT_DIR$/Service/ProxyService.min.min.js" />
         <item url="file://$PROJECT_DIR$/Service/ResizeObserverService.min.js" />
-        <item url="file://$PROJECT_DIR$/Service/ResizeObserverService.min.min.js" />
         <item url="file://$PROJECT_DIR$/Service/TemplateService.min.js" />
-        <item url="file://$PROJECT_DIR$/Service/TemplateService.min.min.js" />
         <item url="file://$PROJECT_DIR$/Service/ValidatorService.min.js" />
-        <item url="file://$PROJECT_DIR$/Service/ValidatorService.min.min.js" />
         <item url="file://$PROJECT_DIR$/Template/Bs5.min.js" />
         <item url="file://$PROJECT_DIR$/Template/Classic.min.js" />
-        <item url="file://$PROJECT_DIR$/Template/Classic.min.min.js" />
-        <item url="file://$PROJECT_DIR$/Template/Rgpd.min.js" />
-        <item url="file://$PROJECT_DIR$/Template/Test.min.js" />
-        <item url="file://$PROJECT_DIR$/Template/Test.min.min.js" />
         <item url="file://$PROJECT_DIR$/Template/index.min.js" />
-        <item url="file://$PROJECT_DIR$/Template/index.min.min.js" />
         <item url="file://$PROJECT_DIR$/config/eventAliasMap.min.js" />
-        <item url="file://$PROJECT_DIR$/config/eventAliasMap.min.min.js" />
         <item url="file://$PROJECT_DIR$/exemple/exemple.min.js" />
         <item url="file://$PROJECT_DIR$/formEvents.min.js" />
       </sourceFilesUrls>
     </properties>
     <CLASSES>
       <root url="file://$PROJECT_DIR$/DTO/EntityDTO.min.js" />
-      <root url="file://$PROJECT_DIR$/DTO/EntityDTO.min.min.js" />
       <root url="file://$PROJECT_DIR$/DTO/OptionDTO.min.js" />
-      <root url="file://$PROJECT_DIR$/DTO/OptionDTO.min.min.js" />
       <root url="file://$PROJECT_DIR$/DyJsForm.min.js" />
-      <root url="file://$PROJECT_DIR$/Service/DebugService.min.js" />
-      <root url="file://$PROJECT_DIR$/Service/DebugService.min.min.js" />
       <root url="file://$PROJECT_DIR$/Service/EventService.min.js" />
-      <root url="file://$PROJECT_DIR$/Service/EventService.min.min.js" />
+      <root url="file://$PROJECT_DIR$/Service/ImportService.min.js" />
       <root url="file://$PROJECT_DIR$/Service/JsonService.min.js" />
-      <root url="file://$PROJECT_DIR$/Service/JsonService.min.min.js" />
       <root url="file://$PROJECT_DIR$/Service/ProxyService.min.js" />
-      <root url="file://$PROJECT_DIR$/Service/ProxyService.min.min.js" />
       <root url="file://$PROJECT_DIR$/Service/ResizeObserverService.min.js" />
-      <root url="file://$PROJECT_DIR$/Service/ResizeObserverService.min.min.js" />
       <root url="file://$PROJECT_DIR$/Service/TemplateService.min.js" />
-      <root url="file://$PROJECT_DIR$/Service/TemplateService.min.min.js" />
       <root url="file://$PROJECT_DIR$/Service/ValidatorService.min.js" />
-      <root url="file://$PROJECT_DIR$/Service/ValidatorService.min.min.js" />
       <root url="file://$PROJECT_DIR$/Template/Bs5.min.js" />
       <root url="file://$PROJECT_DIR$/Template/Classic.min.js" />
-      <root url="file://$PROJECT_DIR$/Template/Classic.min.min.js" />
-      <root url="file://$PROJECT_DIR$/Template/Rgpd.min.js" />
-      <root url="file://$PROJECT_DIR$/Template/Test.min.js" />
-      <root url="file://$PROJECT_DIR$/Template/Test.min.min.js" />
       <root url="file://$PROJECT_DIR$/Template/index.min.js" />
-      <root url="file://$PROJECT_DIR$/Template/index.min.min.js" />
       <root url="file://$PROJECT_DIR$/config/eventAliasMap.min.js" />
-      <root url="file://$PROJECT_DIR$/config/eventAliasMap.min.min.js" />
       <root url="file://$PROJECT_DIR$/exemple/exemple.min.js" />
       <root url="file://$PROJECT_DIR$/formEvents.min.js" />
     </CLASSES>

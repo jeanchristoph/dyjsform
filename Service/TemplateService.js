@@ -1,3 +1,6 @@
+import ImportService from '../Service/ImportService.js';
+
+
 export default class TemplateService {
     constructor() {
         this._templateName = 'Classic';
@@ -22,8 +25,7 @@ export default class TemplateService {
     }
 
     async loadTemplate(){
-        const timestamp = Date.now();
-        const templateIndex = await import(`../Template/index.js?v=${timestamp}`);
+        const templateIndex = await ImportService.importWithLastModified('../Template/index.js');
         // Assurez-vous d'importer la classe par défaut
 
         let template = new templateIndex[this._templateName]();

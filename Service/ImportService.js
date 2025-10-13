@@ -1,0 +1,21 @@
+// ImportService.js
+export default class ImportService {
+    static async getFileLastModified(path) {
+        try {
+            const response = await fetch(path, { method: 'HEAD', cache: 'no-store' });
+            return response.headers.get('Last-Modified');
+        } catch (error) {
+            console.warn(`Impossible de récupérer la date de modification pour ${path}`, error);
+            return Date.now(); // Fallback sur le timestamp actuel
+        }
+    }
+
+    static async importWithLastModified(path) {
+        const lastModified = await this.getFileLastModified(path);
+        return import(`${path}?v=${lastModified}`).then(module => module.default);
+    }
+
+    static async importMultiple(paths) {
+        return Promise.all(paths.map(path => this.importWithLastModified(path)));
+    }
+}
