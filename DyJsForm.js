@@ -121,6 +121,7 @@ export default class DyJsForm {
                     maxCount : data.maxCount || "",
                     options: options,
                     error: data.error || "",
+                    flex: data.flex || "",
 
                 }
             );
