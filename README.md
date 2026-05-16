@@ -1,6 +1,6 @@
 # DyJsForm
 
-Formulaire dynamique JavaScript orienté objet, développé par **Jean-Christophe Malaval**.  
+Formulaire dynamique JavaScript orienté objet.  
 Permet de générer, afficher et sérialiser des formulaires tabulaires dynamiques (ajout/suppression de lignes) à partir d'une définition d'entité JSON.
 
 ---
