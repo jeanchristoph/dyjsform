@@ -1,4 +1,5 @@
-import EventService from "./EventService.js";
+import { CACHE_VERSION } from '../config/version.js';
+const EventService = (await import(`./EventService.js?v=${CACHE_VERSION}`)).default;
 
 export default class ProxyService {
     constructor(instance, options = {}) {

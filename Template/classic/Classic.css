@@ -1,0 +1,105 @@
+.dyjsform_container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.dyjsform_entity {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-start;
+    width: 100%;
+    padding: 1rem;
+    border-bottom: 1px solid #ccc;
+}
+
+.dyjsform_field_wrap {
+    display: flex;
+    flex-direction: column;
+    min-width: 120px;
+}
+
+.dyjsform_label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    color: #333;
+}
+
+.dyjsform_input_container {
+    width: 100%;
+}
+
+.dyjsform_field_input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.9rem;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background: #fff;
+    color: #333;
+    outline: none;
+}
+
+.dyjsform_field_input:focus {
+    border-color: #49B7E8;
+    box-shadow: 0 0 0 2px rgba(73, 183, 232, .25);
+}
+
+.dyjsform_checkbox_group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.dyjsform_checkbox_wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+}
+
+.dyjsform_checkbox_label_text {
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.dyjsform_checkbox {
+    width: 1.1rem;
+    height: 1.1rem;
+    cursor: pointer;
+    accent-color: var(--input-accent-color, #49B7E8);
+    flex-shrink: 0;
+}
+
+.dyjsform_footer {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 1rem;
+}
+
+.dyjsform_btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.9rem;
+    border: none;
+    border-radius: 3px;
+    background: #49B7E8;
+    color: #fff;
+    cursor: pointer;
+}
+
+.dyjsform_btn:hover {
+    background: #2ea3d8;
+}
+
+.djf_error {
+    display: block;
+    font-size: 0.75rem;
+    color: #c00;
+    margin-top: 2px;
+}

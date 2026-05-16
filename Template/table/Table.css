@@ -1,0 +1,95 @@
+table.dyjsform_table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 0.25rem;
+    overflow: hidden;
+    font-family: var(--text-font, 'Mukta', serif);
+    border: 1px solid #c3c7cb;
+}
+
+.dyjsform_table .dyjsform_cell {
+    padding: 5px 6px;
+    vertical-align: top;
+}
+
+.dyjsform_table .dyjsform_cell_action {
+    text-align: left;
+}
+
+.dyjsform_tbl_label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 2px;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dyjsform_table .dyjsform_entity:not(:first-child) .dyjsform_tbl_label {
+    display: none;
+}
+
+.dyjsform_table .dyjsform_entity:first-child td {
+    background-color: #f0f0f0;
+}
+
+.dyjsform_table .dyjsform_entity:nth-child(even) td {
+    background-color: #ffffffb3;
+}
+
+.dyjsform_table .dyjsform_entity:hover td {
+    background-color: #daf0fb;
+    transition: background-color .2s;
+}
+
+.dyjsform_table .dyjsform_input {
+    font-size: 0.82rem;
+    padding: 2px 5px;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: var(--input-border-radius, 3px);
+    border: var(--input-border-width, 1px) solid #ced4da;
+    background-color: #fff;
+}
+
+.dyjsform_table .dyjsform_input:focus {
+    border-color: #49B7E8;
+    box-shadow: 0 0 0 .15rem rgba(73, 183, 232, .25);
+    outline: none;
+}
+
+.dyjsform_table textarea.dyjsform_input {
+    resize: vertical;
+    min-height: 60px;
+}
+
+.dyjsform_table .djf_error {
+    display: block;
+    font-size: 0.7rem;
+}
+
+.dyjsform_checkbox {
+    width: 1.1rem;
+    height: 1.1rem;
+    cursor: pointer;
+    accent-color: var(--input-accent-color, #49B7E8);
+    display: block;
+    margin-top: 4px;
+}
+
+.dyjsform_stack_divider {
+    border-top: 1px dashed #ced4da;
+    margin: 4px 0;
+}
+
+.dyjsform_table .dyjsform_cell_action button {
+    border-radius: 0.25rem !important;
+    align-items: center !important;
+    padding: 2px 5px !important;
+    height: calc(1.5em + 0.5rem + 2px) !important;
+    font-size: revert !important;
+}
