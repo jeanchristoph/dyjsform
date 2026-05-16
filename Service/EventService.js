@@ -1,5 +1,6 @@
 
-import {eventAliasMap} from "../config/eventAliasMap.js";
+import { CACHE_VERSION } from '../config/version.js';
+const { eventAliasMap } = await import(`../config/eventAliasMap.js?v=${CACHE_VERSION}`);
 
 export default class EventService {
 

@@ -1,4 +1,5 @@
-import ValidatorService from "./ValidatorService.js";
+import { CACHE_VERSION } from '../config/version.js';
+const ValidatorService = (await import(`./ValidatorService.js?v=${CACHE_VERSION}`)).default;
 
 export default class JsonService {
     constructor(rawOutput = true) {

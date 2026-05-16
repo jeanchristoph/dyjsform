@@ -2,6 +2,7 @@
 // Version: 1.0.0
 // Auteur: Jean-Christophe Malaval
 
+// TODO: Avoir la possibilité d'avoir des choix multiple checkbox et select
 // TODO: ajouter un system de tooltips pour faire apparaitre les erreurs
 // TODO: Rendre le formaulaire en mode simple sans bouton ajouter
 // TODO: ajouter un bouton submit
@@ -15,14 +16,14 @@
 // TODO: Permettre de pouvoir ajouter des fonction de vérificatiob a la volé dans le JSon avec passage d'un arguement
 
 
-
 //TO DO: ajouter librairie de validation ? just-validate, validate.js -> Sort du périmetre
 //TO DO: ajouter les bulles : tippyjs ?-> Sort du périmetre
 
 
+import { CACHE_VERSION } from './config/version.js';
+
 async function importWithTimestamp(path) {
-    const timestamp = Date.now();
-    return import(`${path}?v=${timestamp}`).then(module => module.default);
+    return import(`${path}?v=${CACHE_VERSION}`).then(module => module.default);
 }
 
 const [
@@ -30,15 +31,13 @@ const [
     TemplateService,
     ProxyService,
     EntityDTO,
-    OptionDTO,
     ResizeObserverService
 ] = await Promise.all([
-    importWithTimestamp('./Service/JsonService.js'),
-    importWithTimestamp('./Service/TemplateService.js'),
-    importWithTimestamp('./Service/ProxyService.js'),
-    importWithTimestamp('./DTO/EntityDTO.js'),
-    importWithTimestamp('./DTO/OptionDTO.js'),
-    importWithTimestamp('./Service/ResizeObserverService.js')
+    importWithTimestamp('./service/JsonService.js'),
+    importWithTimestamp('./service/TemplateService.js'),
+    importWithTimestamp('./service/ProxyService.js'),
+    importWithTimestamp('./contract/dto/EntityDTO.js'),
+    importWithTimestamp('./service/ResizeObserverService.js')
 ]);
 
 export default class DyJsForm {
@@ -96,42 +95,9 @@ export default class DyJsForm {
     // }
 
     set entity(array) {
-        this._entity = array.map(data => {
-            // Traiter les options s'il y en a, sinon définir un tableau vide
-            const options = (data.options || []).map(opt => new OptionDTO(
-                {
-                    name : opt.name || "",
-                    value : opt.value || "",
-                    maxCount : opt.maxCount || null
-                }
-
-            ));
-
-            // Retourner un nouvel EntityDTO
-            return new EntityDTO(
-                {
-                    htmlElement: data.htmlElement || "",
-                    type: data.type || "",
-                    name: data.name || "",
-                    label: data.label || "",
-                    value: data.value || "",
-                    content: data.content || "",
-                    className: data.className || "",
-                    attr: data.attr || "",
-                    maxCount : data.maxCount || "",
-                    options: options,
-                    error: data.error || "",
-                    flex: data.flex || "",
-
-                }
-            );
-        });
+        this._entity = array.map(data => new EntityDTO(data));
         return this;
     }
-
-
-
-
 
     get selector() {
         return this._selector;
@@ -227,7 +193,7 @@ export default class DyJsForm {
     onDataEdit (element){
         let rowNumber = parseInt(element.getAttribute('data-row'));
         let fieldName = element.getAttribute('data-name');
-        let value = element.value;
+        let value = element.type === 'checkbox' ? (element.checked ? element.value : '') : element.value;
 
         let jsonUpdated = this._jsonService.updateJsonByField(rowNumber,fieldName, value);
 
@@ -245,7 +211,8 @@ export default class DyJsForm {
     async handleInputKeyup () {
         // ecoute des inputs
         for (const entity of this.getEntityData()){
-            const elements = document.querySelectorAll(this._selector + ' .' + entity.name);
+            const fieldClass = entity.name.startsWith('dyjsform_') ? entity.name : 'dyjsform_field_' + entity.name;
+            const elements = document.querySelectorAll(this._selector + ' .' + fieldClass);
             if (elements.length > 0) {
                 elements.forEach((element) => {
                     element.addEventListener('keyup',  (event) => {

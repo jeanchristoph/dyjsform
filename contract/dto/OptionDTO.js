@@ -5,16 +5,12 @@ export default class OptionDTO {
      * @param {string} value - La valeur associée à l'option.
      * @param {number|null} maxCount - Le nombre maximal (facultatif) d'utilisation de cette option.
      */
-    constructor({name, value, maxCount = null}) {
+    constructor({name = '', value, maxCount = null}) {
         this.name = name;
         this.value = value;
-        this.maxCount = maxCount; // Nombre maximal (si applicable)
+        this.maxCount = maxCount;
     }
 
-    /**
-     * Convertit l'objet OptionDTO en un objet simple.
-     * @returns {Object} - Représentation JSON de l'option.
-     */
     toJSON() {
         return {
             name: this.name,

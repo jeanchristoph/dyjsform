@@ -1,3 +1,5 @@
+import { CACHE_VERSION } from '../config/version.js';
+
 export default class TemplateService {
     constructor() {
         this._templateName = 'Classic';
@@ -22,15 +24,9 @@ export default class TemplateService {
     }
 
     async loadTemplate(){
-        const timestamp = Date.now();
-        const templateIndex = await import(`../Template/index.js?v=${timestamp}`);
-        // Assurez-vous d'importer la classe par défaut
-
-        let template = new templateIndex[this._templateName]();
-        this._template = template
-
-
-        return template;
+        const module = await import(`../template/${this._templateName.toLowerCase()}/${this._templateName}.js?v=${CACHE_VERSION}`);
+        this._template = new module[this._templateName]();
+        return this._template;
     }
 
 
@@ -54,12 +50,11 @@ export default class TemplateService {
         rows.forEach((row, rowIndex) => {
             HtmlForm += template.getBegin();
             HtmlForm +=  this.fieldRender(entity, row, rowIndex);
-        HtmlForm += template.getEnd();
+            HtmlForm += template.getEnd();
         });
 
         document.querySelector(selector + ' .dyjsform_container').innerHTML = HtmlForm; // Utiliser += pour ajouter le contenu
         return this;
-
     }
 
     assignBootstrapCols(entities) {
@@ -89,36 +84,37 @@ export default class TemplateService {
             cols[decimals[i].index]++;
         }
 
-        entities.forEach((e, i) => e.bsColSize = cols[i]);
+        entities.forEach((e, i) => {
+            e.bsColSize = cols[i];
+            e.flexPercent = (flexValues[i] / totalFlex) * 100;
+        });
         return entities;
     }
 
-
-
     // Fonction pour créer une entity dans le formulaire Bootstrap 5
     fieldRender(entity, row, rowIndex) {
-        const totalFieldsCount = entity.length;
         const template = this._template;
-        row = this.assignBootstrapCols(row)
+        const mainFields  = row.filter(f => !f.stackWith);
+        const stackFields = row.filter(f =>  f.stackWith);
+        this.assignBootstrapCols(mainFields);
         let Html = '';
-        for (let field of row) {
-            Html += template.getField(field,rowIndex, totalFieldsCount );
+        for (let field of mainFields) {
+            const subField = stackFields.find(f => f.stackWith === field.name) || null;
+            Html += template.getField(field, rowIndex, subField);
         }
         return Html;
     }
 
     injectCSS() {
-        var style = document.createElement('style');
-        style.textContent = this._template.getCss();
-        style.setAttribute('data-dyjsform-stylesheet', '');
-        var head = document.head;
-        var firstStyleOrLinkTag = document.querySelector('head>style,head>link');
-
-        if (firstStyleOrLinkTag) {
-            head.insertBefore(style, firstStyleOrLinkTag);
-        } else {
-            head.appendChild(style);
+        if (document.querySelector(`link[data-dyjsform-stylesheet="${this._templateName}"]`)) {
+            return this;
         }
+        const cssUrl = new URL(`../template/${this._templateName.toLowerCase()}/${this._templateName}.css?v=${CACHE_VERSION}`, import.meta.url).href;
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = cssUrl;
+        link.setAttribute('data-dyjsform-stylesheet', this._templateName);
+        document.head.appendChild(link);
         return this;
     }
 
