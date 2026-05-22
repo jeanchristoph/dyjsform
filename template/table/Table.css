@@ -53,7 +53,6 @@ table.dyjsform_table {
     box-sizing: border-box;
     border-radius: var(--input-border-radius, 3px);
     border: var(--input-border-width, 1px) solid #ced4da;
-    background-color: #fff;
 }
 
 .dyjsform_table .dyjsform_input:focus {
